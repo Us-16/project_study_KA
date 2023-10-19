@@ -8,6 +8,6 @@ data class Gallery(
     @SerializedName("account") val account:Account,
     @SerializedName("title") val title:String,
     @SerializedName("content") val content:String,
-    @SerializedName("createDate") val createDate:LocalDateTime,
-    @SerializedName("modifiedDate") val modifiedDate:LocalDateTime
+    @SerializedName("createDate") val createDate:String,
+    @SerializedName("modifiedDate") val modifiedDate:String
 )

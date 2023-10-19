@@ -13,23 +13,11 @@ class RetrofitInit {
         val loggingInterceptor = HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
         clientBuilder.addInterceptor(loggingInterceptor)
 
-        val okHttpClient = OkHttpClient.Builder()
-            .addInterceptor{ chain ->
-                val request = chain.request()
-                val response = chain.proceed(request)
-                val responseBody = response.body()
-                val responseBodyString = responseBody?.string() ?: ""
-
-                response.newBuilder().body(
-                    ResponseBody.create(responseBody?.contentType(), responseBodyString)
-                ).build()
-            }.build()
-
 
         return Retrofit.Builder()
             .baseUrl("http://192.168.0.11:8080/")
-            .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
+            .client(clientBuilder.build())
             .build()
     }
 }

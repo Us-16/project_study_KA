@@ -9,6 +9,6 @@ data class Account(
     val name:String,
     val tel:String,
     val role:String,
-    val createDate:LocalDateTime,
-    val modifiedDate:LocalDateTime
+    val createDate:String,
+    val modifiedDate:String //시간값 문제
 )

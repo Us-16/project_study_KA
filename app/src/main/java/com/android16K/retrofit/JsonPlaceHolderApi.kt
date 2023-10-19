@@ -6,5 +6,5 @@ import retrofit2.http.GET
 
 interface JsonPlaceHolderApi {
     @GET("gall/api/list")
-    fun getAllGallList():Call<HashMap<String,String>>
+    fun getAllGallList():Call<List<Gallery>>
 }
