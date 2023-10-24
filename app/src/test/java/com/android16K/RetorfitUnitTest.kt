@@ -56,12 +56,9 @@ class RetorfitUnitTest {
         val response = call.execute()
         if (response.isSuccessful) {
             val data = response.body()
-            println("onResponse: $data")
         } else {
             val httpStatusCode = response.code()
             val errorBody = response.errorBody()
-            println("onResponse: $httpStatusCode")
-            println("onResponse: $errorBody")
         }
     }
 }

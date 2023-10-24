@@ -15,7 +15,7 @@ class RetrofitInit {
 
 
         return Retrofit.Builder()
-            .baseUrl("http://192.168.0.11:8080/")
+            .baseUrl("http://49.173.81.98:8080/")
             .addConverterFactory(GsonConverterFactory.create())
             .client(clientBuilder.build())
             .build()
