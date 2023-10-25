@@ -1,5 +1,6 @@
 package com.android16K
 
+import com.android16K.dataset.LoginAccount
 import com.android16K.retrofit.JsonPlaceHolderApi
 import com.android16K.retrofit.RetrofitInit
 import kotlinx.coroutines.runBlocking
@@ -13,9 +14,7 @@ class LoginTest {
     fun loginProcessTest(): Unit = runBlocking{
         val retrofitInit = RetrofitInit().init()
         val jsonPlaceHolderApi = retrofitInit.create(JsonPlaceHolderApi::class.java)
-        val testData = HashMap<String, String>()
-        testData["username"] = "testUsername"
-        val call = jsonPlaceHolderApi.loginProcess(testData)
+        val call = jsonPlaceHolderApi.loginProcess("test", "1234")
 
         val response = call.execute()
 

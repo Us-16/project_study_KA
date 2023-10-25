@@ -25,26 +25,8 @@ class TestActivity : AppCompatActivity() {
         val jsonPlaceHolderApi = retrofitInit.create(JsonPlaceHolderApi::class.java)
         val testData = HashMap<String, String>()
         testData["username"] = "testUsername"
-        val call = jsonPlaceHolderApi.loginProcess(testData)
+        //val call = jsonPlaceHolderApi.loginProcess(testData)
 
-        call.enqueue(object : Callback<Any>{
-            override fun onResponse(call: Call<Any>, response: Response<Any>) {
-                Log.i(TAG, "onResponse: ${response.isSuccessful}")
-                if(response.isSuccessful){
-                    val data = response.body()
-                    Log.i(TAG, "onResponse: $data")
-                }else{
-                    Log.e(TAG, "onResponse: ${response.code()}")
-                    Log.e(TAG, "onResponse: ${response.errorBody()}")
-                }
-            }
-
-            override fun onFailure(call: Call<Any>, t: Throwable) {
-                Log.e(TAG, "onFailure: $call")
-                Log.e(TAG, "onFailure: ${t.message}", )
-            }
-
-        })
 
     }
 }
