@@ -1,8 +1,6 @@
 package com.android16K.retrofit
 
-import com.google.gson.GsonBuilder
 import okhttp3.OkHttpClient
-import okhttp3.ResponseBody
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -12,6 +10,7 @@ class RetrofitInit {
         val clientBuilder = OkHttpClient.Builder()
         val loggingInterceptor = HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
         clientBuilder.addInterceptor(loggingInterceptor)
+
 
 
         return Retrofit.Builder()
