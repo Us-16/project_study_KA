@@ -8,6 +8,7 @@ import androidx.lifecycle.ReportFragment.Companion.reportFragment
 import com.android16K.R
 import com.android16K.retrofit.JsonPlaceHolderApi
 import com.android16K.retrofit.RetrofitInit
+import com.google.gson.Gson
 import com.google.gson.JsonObject
 import retrofit2.Call
 import retrofit2.Callback
@@ -27,23 +28,25 @@ class TestActivity : AppCompatActivity() {
         val testData = HashMap<String, String>()
         testData["username"] = "testUsername"
         
-        val call = jsonPlaceHolderApi.loginProcess("test", "1234")
+        val call = jsonPlaceHolderApi.loginProcess("test", "12345")
         
-        call.enqueue(object: Callback<Any>{
-            override fun onResponse(call: Call<Any>, response: Response<Any>) {
+        call.enqueue(object: Callback<HashMap<String, String>>{
+            override fun onResponse(call: Call<HashMap<String, String>>, response: Response<HashMap<String, String>>) {
                 if(response.isSuccessful){
                     Log.d(TAG, "this is successful site")
-                    val data = response.body()
                     val cookieHeader = response.headers()["Set-Cookie"]?.split(";")?.get(0)
                     Log.d(TAG, "JSESSIONID: ${cookieHeader?.split("=")?.get(1)}")
-                    Log.i(TAG, "onResponse: ${data}")
+
+                    //val data = Gson().toJson(response.body())
+                    val data = response.body()
+                    Log.e(TAG, "login Failure: ${data?.get("code")}", )
                 }else{
                     Log.e(TAG, "onResponse: ${response.code()}", )
                     Log.e(TAG, "onResponse: ${response.errorBody()}", )
                 }
             }
 
-            override fun onFailure(call: Call<Any>, t: Throwable) {
+            override fun onFailure(call: Call<HashMap<String, String>>, t: Throwable) {
                 Log.e(TAG, "onFailure: ${t.message}", )
             }
 
