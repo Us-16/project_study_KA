@@ -30,8 +30,8 @@ class TestActivity : AppCompatActivity() {
         
         val call = jsonPlaceHolderApi.loginProcess("test", "12345")
         
-        call.enqueue(object: Callback<HashMap<String, String>>{
-            override fun onResponse(call: Call<HashMap<String, String>>, response: Response<HashMap<String, String>>) {
+        call.enqueue(object: Callback<HashMap<String, Any>>{
+            override fun onResponse(call: Call<HashMap<String, Any>>, response: Response<HashMap<String, Any>>) {
                 if(response.isSuccessful){
                     Log.d(TAG, "this is successful site")
                     val cookieHeader = response.headers()["Set-Cookie"]?.split(";")?.get(0)
@@ -46,7 +46,7 @@ class TestActivity : AppCompatActivity() {
                 }
             }
 
-            override fun onFailure(call: Call<HashMap<String, String>>, t: Throwable) {
+            override fun onFailure(call: Call<HashMap<String, Any>>, t: Throwable) {
                 Log.e(TAG, "onFailure: ${t.message}", )
             }
 

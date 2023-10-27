@@ -25,7 +25,7 @@ class GalleryAdapter(private val context: Context, private val gallList: List<Ga
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
         val view = LayoutInflater.from(context).inflate(R.layout.listview_gall, null)
 
-        val gallTitle = view.findViewById<TextView>(R.id.gall_title)
+        val gallTitle = view.findViewById<TextView>(R.id.gall_form_title)
         val gallContent = view.findViewById<TextView>(R.id.gall_content)
 
         val gall = gallList!![position]

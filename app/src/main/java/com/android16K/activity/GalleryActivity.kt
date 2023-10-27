@@ -1,27 +1,42 @@
 package com.android16K.activity
 
 import android.content.ContentValues.TAG
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.View.OnClickListener
 import android.widget.ListView
 import com.android16K.R
 import com.android16K.adapter.GalleryAdapter
-import com.android16K.dataset.Account
 import com.android16K.dataset.Gallery
 import com.android16K.retrofit.JsonPlaceHolderApi
 import com.android16K.retrofit.RetrofitInit
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.time.LocalDateTime
 
 class GalleryActivity : AppCompatActivity() {
+    private var addButton: FloatingActionButton? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_gallery_actvity)
 
         getAndPutData()
+
+        addButton = findViewById(R.id.gall_list_addButton)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        addButton!!.setOnClickListener(addListener)
+    }
+
+    private val addListener:OnClickListener = OnClickListener{
+        val intent = Intent(this.applicationContext, GalleryFormActivity::class.java)
+        startActivity(intent)
+        finish()
     }
     
     private fun getAndPutData(){
