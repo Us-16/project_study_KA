@@ -27,11 +27,13 @@ class GalleryAdapter(private val context: Context, private val gallList: List<Ga
 
         val gallTitle = view.findViewById<TextView>(R.id.gall_form_title)
         val gallContent = view.findViewById<TextView>(R.id.gall_content)
+        val gallId = view.findViewById<TextView>(R.id.gall_id)
 
         val gall = gallList!![position]
 
         gallTitle.text = gall.title
         gallContent.text = gall.content
+        gallId.text = gall.id.toString()
 
         return view
     }

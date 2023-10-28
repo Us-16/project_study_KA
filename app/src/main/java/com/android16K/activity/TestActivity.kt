@@ -4,15 +4,9 @@ import android.content.ContentValues.TAG
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import androidx.lifecycle.ReportFragment.Companion.reportFragment
 import com.android16K.R
-import com.android16K.retrofit.JsonPlaceHolderApi
-import com.android16K.retrofit.RetrofitInit
-import com.google.gson.Gson
-import com.google.gson.JsonObject
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import com.android16K.retrofit.*
+import retrofit2.*
 
 class TestActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,7 +31,6 @@ class TestActivity : AppCompatActivity() {
                     val cookieHeader = response.headers()["Set-Cookie"]?.split(";")?.get(0)
                     Log.d(TAG, "JSESSIONID: ${cookieHeader?.split("=")?.get(1)}")
 
-                    //val data = Gson().toJson(response.body())
                     val data = response.body()
                     Log.e(TAG, "login Failure: ${data?.get("code")}", )
                 }else{

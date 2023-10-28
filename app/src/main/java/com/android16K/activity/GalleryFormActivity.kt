@@ -11,12 +11,16 @@ import android.widget.EditText
 import android.widget.Toast
 import com.android16K.R
 import com.android16K.dataset.AuthenticationInfo
+import com.android16K.dataset.RequestGallery
 import com.android16K.retrofit.JsonPlaceHolderApi
 import com.android16K.retrofit.RetrofitInit
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import kotlin.system.exitProcess
 
-//TODO("글을 작성하고 저장합니다. 최종적으로 본인이 작성한 액티비티(Detail)로 이동해야합니다.")
+//TODO("최종적으로 본인이 작성한 액티비티(Detail)로 이동해야합니다.")
 class GalleryFormActivity : AppCompatActivity() {
     private var title: EditText? = null
     private var content: EditText? = null
@@ -52,11 +56,23 @@ class GalleryFormActivity : AppCompatActivity() {
     private fun sendData(title: Editable, content: Editable) {
         val retrofitInit = RetrofitInit().init()
         val jsonPlaceHolderApi = retrofitInit.create(JsonPlaceHolderApi::class.java)
-
         val authenticationInfo = AuthenticationInfo.getInstance()
-        Log.d(TAG, "sendData: ${authenticationInfo.username}, ${authenticationInfo.authorities}, ${authenticationInfo.jSessionId}")
-        //val call = jsonPlaceHolderApi.createGall(title, content, classify, account)
+        
+        val call = jsonPlaceHolderApi.createGall(RequestGallery(title.toString(), content.toString(), "TEST", authenticationInfo.username))
+        
+        call.enqueue(object : Callback<Any> {
+            override fun onResponse(call: Call<Any>, response: Response<Any>) {
+                if(response.isSuccessful){
+                    Log.d(TAG, "onResponse: Success") //14:26 확인했습니다.
+                }else{
+                    Log.e(TAG, "onResponse: ${response.code()}, ${response.errorBody()}", )
+                }
+            }
 
-        //call 25685CD4CA317A24C4406B20C1C02C4F
+            override fun onFailure(call: Call<Any>, t: Throwable) {
+                Log.e(TAG, "onFailure: ${t.message}")
+            }
+
+        })
     }
 }

@@ -5,7 +5,10 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.view.View.OnClickListener
+import android.widget.AdapterView
+import android.widget.AdapterView.OnItemClickListener
 import android.widget.ListView
 import com.android16K.R
 import com.android16K.adapter.GalleryAdapter
@@ -43,15 +46,19 @@ class GalleryActivity : AppCompatActivity() {
         val retrofitInit = RetrofitInit().init()
         val jsonPlaceHolderApi = retrofitInit.create(JsonPlaceHolderApi::class.java)
         val call = jsonPlaceHolderApi.getAllGallList()
-        
-        
+
         call.enqueue(object : Callback<List<Gallery>> {
             override fun onResponse(call: Call<List<Gallery>>, response: Response<List<Gallery>>) {
                 if (response.isSuccessful){
                     val data = response.body()
-                    Log.i(TAG, "onResponse: $data")
                     val galleryAdapter = GalleryAdapter(this@GalleryActivity, data)
                     val gallListView = findViewById<ListView>(R.id.gall_list)
+                    gallListView.onItemClickListener =
+                        OnItemClickListener { parent, view, position, id ->
+                            val it = Intent(this@GalleryActivity.applicationContext, GalleryDetailActivity::class.java)
+                            it.putExtra("gall_id", data?.get(position)?.id)
+                            startActivity(it)
+                        }
                     gallListView.adapter = galleryAdapter
                 }else{
                     Log.e(TAG, "onResponse: ${response.code()}")
@@ -63,7 +70,5 @@ class GalleryActivity : AppCompatActivity() {
                 Log.e(TAG, "onFailure: ${t.message}")
             }
         })
-        
-        
     }
 }
