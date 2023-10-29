@@ -26,6 +26,7 @@ class GalleryDetailActivity : AppCompatActivity() {
     private var content: TextView? = null
     private var author: TextView? = null
     private var date: TextView? = null
+    private var layout: LinearLayoutCompat? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,9 +43,11 @@ class GalleryDetailActivity : AppCompatActivity() {
 
     private fun loadElement() {
         title = findViewById(R.id.gall_detail_title)
-        content = findViewById<TextView>(R.id.gall_detail_content)
-        date = findViewById<TextView>(R.id.gall_detail_date)
-        author = findViewById<TextView>(R.id.gall_detail_author)
+        content = findViewById(R.id.gall_detail_content)
+        date = findViewById(R.id.gall_detail_date)
+        author = findViewById(R.id.gall_detail_author)
+
+        layout = findViewById(R.id.gall_detail_imageContainer)
     }
 
     private fun getGalleryImage(gallId: Long) {
@@ -58,8 +61,8 @@ class GalleryDetailActivity : AppCompatActivity() {
                 if(response.isSuccessful){
                     Log.d(TAG, "onResponse: ${response.body()}")
                     val data = response.body()
-                    val layout = findViewById<LinearLayoutCompat>(R.id.gall_detail_imageContainer)
-                    imageLoad(layout, data!!)
+
+                    layout?.let { imageLoad(it, data!!) }
                 }
             }
 
@@ -75,10 +78,9 @@ class GalleryDetailActivity : AppCompatActivity() {
             val imageParam = LinearLayoutCompat.LayoutParams(
                 LinearLayoutCompat.LayoutParams.WRAP_CONTENT, //width
                 1000
-                //LinearLayoutCompat.LayoutParams.WRAP_CONTENT, //height
             )
             imageParam.marginStart = 50
-            imageParam.topMargin = 50
+            imageParam.topMargin = 150
 
             imageView.layoutParams = imageParam
 

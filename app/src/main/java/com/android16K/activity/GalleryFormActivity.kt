@@ -1,23 +1,33 @@
 package com.android16K.activity
 
 import android.content.ContentValues.TAG
+import android.content.Intent
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.provider.MediaStore
 import android.text.Editable
 import android.util.Log
 import android.view.View.OnClickListener
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContract
 import com.android16K.R
 import com.android16K.dataset.AuthenticationInfo
 import com.android16K.dataset.RequestGallery
 import com.android16K.retrofit.JsonPlaceHolderApi
 import com.android16K.retrofit.RetrofitInit
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import okhttp3.MediaType
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.io.File
+import java.lang.Exception
 import kotlin.system.exitProcess
 
 //TODO("최종적으로 본인이 작성한 액티비티(Detail)로 이동해야합니다.")
@@ -25,6 +35,10 @@ class GalleryFormActivity : AppCompatActivity() {
     private var title: EditText? = null
     private var content: EditText? = null
     private var saveButton: Button? = null
+    private var imageButton: Button? = null
+    private var image: ImageView? = null
+
+    private var imageURI: Uri? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,11 +47,29 @@ class GalleryFormActivity : AppCompatActivity() {
         saveButton = findViewById(R.id.gall_form_saveButton)
         title = findViewById(R.id.gall_form_title)
         content = findViewById(R.id.gall_form_content)
+
+        imageButton = findViewById(R.id.gall_form_imageButton)
+        image = findViewById(R.id.gall_form_image)
     }
 
     override fun onStart() {
         super.onStart()
         saveButton!!.setOnClickListener(saveGallery)
+        imageButton!!.setOnClickListener(imageSave)
+    }
+
+    private val imageSave:OnClickListener = OnClickListener {
+        val image = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI)
+        startActivityForResult(image, 100)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if(resultCode == RESULT_OK && requestCode == 100){
+            val imageUri = data?.data
+            imageURI = imageUri
+            image!!.setImageURI(imageUri)
+        }
     }
 
     private fun checkEmpty(title: Editable, content: Editable): Boolean {
@@ -57,15 +89,16 @@ class GalleryFormActivity : AppCompatActivity() {
         val retrofitInit = RetrofitInit().init()
         val jsonPlaceHolderApi = retrofitInit.create(JsonPlaceHolderApi::class.java)
         val authenticationInfo = AuthenticationInfo.getInstance()
-        
+
         val call = jsonPlaceHolderApi.createGall(RequestGallery(title.toString(), content.toString(), "TEST", authenticationInfo.username))
         
         call.enqueue(object : Callback<Any> {
             override fun onResponse(call: Call<Any>, response: Response<Any>) {
                 if(response.isSuccessful){
                     Log.d(TAG, "onResponse: Success") //14:26 확인했습니다.
-                }else{
-                    Log.e(TAG, "onResponse: ${response.code()}, ${response.errorBody()}", )
+                    sendImage()
+                }else {
+                    Log.e(TAG, "onResponse: ${response.code()}, ${response.errorBody()}",)
                 }
             }
 
@@ -74,5 +107,29 @@ class GalleryFormActivity : AppCompatActivity() {
             }
 
         })
+    }
+
+    private fun sendImage(){
+        /*이미지 테스트입니다.*/
+        val retrofitInit = RetrofitInit().init()
+        val jsonPlaceHolderApi = retrofitInit.create(JsonPlaceHolderApi::class.java)
+
+        val file = imageURI!!.path?.let { File(it) }
+        val requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file)
+        val imagePart = MultipartBody.Part.createFormData("upload_file", file!!.name + ".jpeg", requestFile)
+
+        val call = jsonPlaceHolderApi.createImage(imagePart)
+
+        call.enqueue(object : Callback<Any>{
+            override fun onResponse(call: Call<Any>, response: Response<Any>) {
+                Log.d(TAG, "onResponse: $response")
+            }
+
+            override fun onFailure(call: Call<Any>, t: Throwable) {
+                Log.e(TAG, "onFailure: ${t.message}")
+            }
+
+        })
+
     }
 }
