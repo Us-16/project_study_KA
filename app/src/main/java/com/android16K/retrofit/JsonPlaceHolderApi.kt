@@ -1,8 +1,10 @@
 package com.android16K.retrofit
 
+import com.android16K.dataset.Answer
 import com.android16K.dataset.Gallery
 import com.android16K.dataset.GalleryImage
 import com.android16K.dataset.LoginAccount
+import com.android16K.dataset.RequestAnswer
 import com.android16K.dataset.RequestGallery
 import okhttp3.MultipartBody
 import retrofit2.Call
@@ -27,11 +29,15 @@ interface JsonPlaceHolderApi {
     @POST("/gall/api/create-image")
     fun createImage(@Part image:MultipartBody.Part): Call<Any>
     @POST("/gall/api/create")
-    fun createGall(@Body requestGallery: RequestGallery): Call<Any>
+    fun createGall(@Body requestGallery: RequestGallery): Call<Gallery>
 
     @GET("/gall/api/detail")
     fun getGallItem(@Query("id") gallId: Long): Call<Gallery>
 
     @GET("/gall/api/image-list")
     fun getGallImageList(@Query("id") gallId:Long): Call<List<GalleryImage>>
+    @GET("/gall/api/answer-list")
+    fun getAllAnswer(@Query("gallId") gallId: Long): Call<List<Answer>>
+    @POST("/gall/api/create/answer")
+    fun createAnswer(@Body requestAnswer: RequestAnswer): Call<Long>
 }

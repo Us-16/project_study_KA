@@ -44,17 +44,35 @@
                 </androidx.appcompat.widget.LinearLayoutCompat>
             </HorizontalScrollView>
 
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/gall_detail_answerContainer"
+                    android:orientation="vertical">
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
+            </ScrollView>
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:layout_width="320dp"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/gall_detail_answerInput"/>
+
+                <Button
+                    android:id="@+id/gall_detail_saveAnswerButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="등록"/>
+            </androidx.appcompat.widget.LinearLayoutCompat>
         </androidx.appcompat.widget.LinearLayoutCompat>
     </ScrollView>
 
-
-
-
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        tools:ignore="MissingConstraints">
-
-    </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

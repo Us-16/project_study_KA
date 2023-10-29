@@ -4,19 +4,27 @@ import android.content.ContentValues.TAG
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.View.OnClickListener
+import android.widget.Button
+import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.core.view.marginBottom
 import com.android16K.R
+import com.android16K.dataset.Answer
+import com.android16K.dataset.AuthenticationInfo
 import com.android16K.dataset.Gallery
 import com.android16K.dataset.GalleryImage
+import com.android16K.dataset.RequestAnswer
 import com.android16K.retrofit.JsonPlaceHolderApi
 import com.android16K.retrofit.RetrofitInit
 import com.bumptech.glide.Glide
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.time.LocalDateTime
 
 class GalleryDetailActivity : AppCompatActivity() {
     private val retrofitInit = RetrofitInit().init()
@@ -27,18 +35,26 @@ class GalleryDetailActivity : AppCompatActivity() {
     private var author: TextView? = null
     private var date: TextView? = null
     private var layout: LinearLayoutCompat? = null
+    private var answerSaveButton: Button? = null
+
+    private var gallId:Long? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_gallery_detail)
 
-        val gallId = intent.getLongExtra("gall_id", -1)
+        gallId = intent.getLongExtra("gall_id", -1)
 
         loadElement()
 
-        getGalleryData(gallId)
-        getGalleryImage(gallId)
-        getGalleryAnswer(gallId)
+        getGalleryData(gallId!!)
+        getGalleryImage(gallId!!)
+        getGalleryAnswer(gallId!!)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        answerSaveButton!!.setOnClickListener(saveAnswer)
     }
 
     private fun loadElement() {
@@ -48,6 +64,8 @@ class GalleryDetailActivity : AppCompatActivity() {
         author = findViewById(R.id.gall_detail_author)
 
         layout = findViewById(R.id.gall_detail_imageContainer)
+
+        answerSaveButton = findViewById(R.id.gall_detail_saveAnswerButton)
     }
 
     private fun getGalleryImage(gallId: Long) {
@@ -92,9 +110,67 @@ class GalleryDetailActivity : AppCompatActivity() {
         }
     }
 
+    private fun answerLoad(layout: LinearLayoutCompat, answerList:List<Answer>){
+        for(answer in answerList){
+            val contentText = TextView(this@GalleryDetailActivity.applicationContext)
+            val textViewParam = LinearLayoutCompat.LayoutParams(
+                LinearLayoutCompat.LayoutParams.MATCH_PARENT,
+                LinearLayoutCompat.LayoutParams.WRAP_CONTENT
+            )
+            textViewParam.topMargin = 50
+            textViewParam.marginStart = 50
+
+            contentText.layoutParams = textViewParam
+
+            contentText.text = answer.account.username+ "\n" + answer.content + "\n" + answer.createdDate.split("T")[0] + " " +answer.createdDate.split("T")[1].split(".")[0]
+
+            layout.addView(contentText)
+        }
+    }
+
+    private val saveAnswer: OnClickListener = OnClickListener {
+        val answerInput = findViewById<EditText>(R.id.gall_detail_answerInput)
+        val authenticationInfo = AuthenticationInfo.getInstance()
+        val call = jsonPlaceHolderApi.createAnswer(
+            RequestAnswer(content = answerInput.text.toString(),
+                gallId = gallId!!.toLong(),
+                username = authenticationInfo.username!!))
+        call.enqueue(object:Callback<Long>{
+            override fun onResponse(call: Call<Long>, response: Response<Long>) {
+                if(response.isSuccessful){
+                    val data = response.body() as Long
+                    Log.d(TAG, "onResponse: ${data}") //-1을 받으면 실패
+                    if(data > 0L){
+                        getGalleryAnswer(gallId!!)
+                        answerInput.text.clear()
+                    }else{
+                        Toast.makeText(this@GalleryDetailActivity.applicationContext, "답변 등록에 실패했습니다.", Toast.LENGTH_LONG).show()
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<Long>, t: Throwable) {
+                Log.e(TAG, "onFailure: ${t.message}", null)
+            }
+        })
+    }
 
     private fun getGalleryAnswer(gallId: Long) {
+        val call = jsonPlaceHolderApi.getAllAnswer(gallId)
 
+        call.enqueue(object:Callback<List<Answer>>{
+            override fun onResponse(call: Call<List<Answer>>, response: Response<List<Answer>>) {
+                if(response.isSuccessful){
+                    val data = response.body()!!
+                    val answerContainer = findViewById<LinearLayoutCompat>(R.id.gall_detail_answerContainer)
+                    answerLoad(answerContainer, data)
+                }
+            }
+
+            override fun onFailure(call: Call<List<Answer>>, t: Throwable) {
+                Log.e(TAG, "onFailure: ${t.message}", null)
+            }
+        })
     }
 
     private fun getGalleryData(gallId:Long){

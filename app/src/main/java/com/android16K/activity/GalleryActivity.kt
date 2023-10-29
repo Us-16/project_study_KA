@@ -39,7 +39,7 @@ class GalleryActivity : AppCompatActivity() {
     private val addListener:OnClickListener = OnClickListener{
         val intent = Intent(this.applicationContext, GalleryFormActivity::class.java)
         startActivity(intent)
-        finish()
+        //finish()
     }
     
     private fun getAndPutData(){
