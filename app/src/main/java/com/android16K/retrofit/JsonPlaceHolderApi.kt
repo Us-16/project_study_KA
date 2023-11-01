@@ -40,4 +40,11 @@ interface JsonPlaceHolderApi {
     fun getAllAnswer(@Query("gallId") gallId: Long): Call<List<Answer>>
     @POST("/gall/api/create/answer")
     fun createAnswer(@Body requestAnswer: RequestAnswer): Call<Long>
+
+    @GET("/account/api/username-dup")
+    fun getUsernameDup(@Query("username") username: String): Call<Boolean>
+    @GET("/sms/tel-dup")
+    fun getTelDup(@Query("tel") tel: String): Call<Boolean>
+    @GET("/sms/code")
+    fun getAnswerCoder(@Query("tel") tel: String): Call<String>
 }

@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activity.AccountActivity">
+
+    <TextView
+        android:id="@+id/account_head"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:text="회원가입"
+        android:textSize="30dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/account_usernameLabel"
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="27dp"
+        android:text="아이디"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/account_head" />
+
+    <EditText
+        android:id="@+id/account_username"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="25dp"
+        android:layout_marginTop="70dp"
+        android:ems="10"
+        android:hint="영문자 + 숫자 4자 이상"
+        android:inputType="text"
+        app:layout_constraintStart_toEndOf="@+id/account_usernameLabel"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/account_passwordLabel"
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="50dp"
+        android:text="비밀번호"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/account_usernameLabel" />
+
+    <TextView
+        android:id="@+id/account_usernameResult"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="27dp"
+        app:layout_constraintStart_toEndOf="@id/account_usernameLabel"
+        app:layout_constraintTop_toBottomOf="@+id/account_username" />
+
+    <Button
+        android:id="@+id/account_usernameDupButton"
+        android:layout_width="95dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="3dp"
+        android:layout_marginTop="70dp"
+        android:text="중복 확인"
+        app:layout_constraintStart_toEndOf="@+id/account_username"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/account_password"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="25dp"
+        android:ems="10"
+        android:hint="영문자 + 숫자 5자 이상"
+        android:inputType="textPassword"
+        app:layout_constraintStart_toEndOf="@+id/account_passwordLabel"
+        app:layout_constraintTop_toBottomOf="@+id/account_usernameResult" />
+
+    <EditText
+        android:id="@+id/account_passwordConfirm"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="25dp"
+        android:ems="10"
+        android:inputType="textPassword"
+        app:layout_constraintStart_toEndOf="@+id/account_passwordLabel"
+        app:layout_constraintTop_toBottomOf="@+id/account_password" />
+
+    <TextView
+        android:id="@+id/account_passwordResult"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="27dp"
+        app:layout_constraintStart_toEndOf="@id/account_passwordLabel"
+        app:layout_constraintTop_toBottomOf="@+id/account_passwordConfirm" />
+
+    <Button
+        android:id="@+id/account_passwordConfirmButton"
+        android:layout_width="95dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="60dp"
+        android:text="확인"
+        app:layout_constraintStart_toEndOf="@+id/account_password"
+        app:layout_constraintTop_toBottomOf="@+id/account_usernameDupButton" />
+
+    <TextView
+        android:id="@+id/account_nameLabel"
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="100dp"
+        android:text="이름"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/account_passwordLabel" />
+
+    <EditText
+        android:id="@+id/account_name"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="17dp"
+        android:ems="10"
+        android:hint="이름"
+        android:inputType="text"
+        app:layout_constraintStart_toEndOf="@+id/account_nameLabel"
+        app:layout_constraintTop_toBottomOf="@+id/account_passwordResult" />
+
+    <TextView
+        android:id="@+id/textView7"
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="40dp"
+        android:text="생년월일"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/account_nameLabel" />
+
+    <EditText
+        android:id="@+id/account_birth"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="25dp"
+        android:layout_marginTop="15dp"
+        android:ems="10"
+        android:inputType="date"
+        app:layout_constraintStart_toEndOf="@+id/textView7"
+        app:layout_constraintTop_toBottomOf="@+id/account_name" />
+
+    <TextView
+        android:id="@+id/account_telLabel"
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="40dp"
+        android:text="전화번호"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView7" />
+
+    <EditText
+        android:id="@+id/account_tel"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="25dp"
+        android:layout_marginTop="15dp"
+        android:ems="10"
+        android:inputType="phone"
+        app:layout_constraintStart_toEndOf="@+id/account_telLabel"
+        app:layout_constraintTop_toBottomOf="@+id/account_birth" />
+
+    <EditText
+        android:id="@+id/account_telCert"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="25dp"
+        android:ems="10"
+        android:inputType="numberDecimal"
+        app:layout_constraintStart_toEndOf="@+id/account_telLabel"
+        app:layout_constraintTop_toBottomOf="@id/account_tel" />
+
+    <Button
+        android:id="@+id/account_telCertButton"
+        android:layout_width="95dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="150dp"
+        android:text="인증번호"
+        app:layout_constraintStart_toEndOf="@+id/account_tel"
+        app:layout_constraintTop_toBottomOf="@+id/account_passwordConfirmButton" />
+
+    <Button
+        android:id="@+id/account_telCheckButton"
+        android:layout_width="95dp"
+        android:layout_height="wrap_content"
+        android:text="확인"
+        app:layout_constraintStart_toEndOf="@+id/account_tel"
+        app:layout_constraintTop_toBottomOf="@+id/account_telCertButton" />
+
+    <Button
+        android:id="@+id/account_createButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="160dp"
+        android:text="완료"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/account_telLabel" />
+
+    <TextView
+        android:id="@+id/account_telResult"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="3dp"
+        app:layout_constraintStart_toStartOf="@id/account_telCert"
+        app:layout_constraintTop_toBottomOf="@id/account_telCert" />
+</androidx.constraintlayout.widget.ConstraintLayout>

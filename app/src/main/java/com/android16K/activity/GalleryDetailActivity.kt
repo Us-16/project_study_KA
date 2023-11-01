@@ -122,7 +122,9 @@ class GalleryDetailActivity : AppCompatActivity() {
 
             contentText.layoutParams = textViewParam
 
-            contentText.text = answer.account.username+ "\n" + answer.content + "\n" + answer.createdDate.split("T")[0] + " " +answer.createdDate.split("T")[1].split(".")[0]
+            contentText.text ="${answer.account.username}\n" +
+                    "${answer.content}\n" +
+                    "${answer.createdDate.split("T")[0]} ${answer.createdDate.split("T")[1].split(".")[0]}"
 
             layout.addView(contentText)
         }

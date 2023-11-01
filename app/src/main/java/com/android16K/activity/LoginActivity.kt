@@ -8,6 +8,7 @@ import android.text.Editable
 import android.util.Log
 import android.view.View.OnClickListener
 import android.widget.Button
+import android.widget.TextView
 import android.widget.Toast
 import com.android16K.R
 import com.android16K.dataset.AuthenticationInfo
@@ -22,16 +23,23 @@ import retrofit2.Response
 
 class LoginActivity : AppCompatActivity() {
     private var loginButton : Button? = null
+    private var toAccount: TextView? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
         loginButton = findViewById(R.id.login_loginButton)
+        toAccount = findViewById(R.id.login_accountHy)
     }
 
     override fun onStart(){
         super.onStart()
         loginButton!!.setOnClickListener(loginListener)
+        toAccount!!.setOnClickListener(toAccountAct)
+    }
+
+    private val toAccountAct: OnClickListener = OnClickListener {
+        startActivity(Intent(this.applicationContext, AccountActivity::class.java))
     }
 
     private val loginListener: OnClickListener = OnClickListener {
