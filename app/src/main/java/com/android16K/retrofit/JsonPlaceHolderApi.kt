@@ -1,5 +1,6 @@
 package com.android16K.retrofit
 
+import com.android16K.dataset.Account
 import com.android16K.dataset.Answer
 import com.android16K.dataset.Gallery
 import com.android16K.dataset.GalleryImage
@@ -47,4 +48,6 @@ interface JsonPlaceHolderApi {
     fun getTelDup(@Query("tel") tel: String): Call<Boolean>
     @GET("/sms/code")
     fun getAnswerCoder(@Query("tel") tel: String): Call<String>
+    @POST("/account/api/create")
+    fun createAccount(@Body account: Account): Call<Boolean>
 }

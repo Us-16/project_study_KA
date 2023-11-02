@@ -1,6 +1,7 @@
 package com.android16K.activity
 
 import android.content.ContentValues.TAG
+import android.content.Intent
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -9,12 +10,15 @@ import android.view.View.OnClickListener
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
+import android.widget.Toast
 import com.android16K.R
+import com.android16K.dataset.Account
 import com.android16K.retrofit.JsonPlaceHolderApi
 import com.android16K.retrofit.RetrofitInit
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.time.LocalDateTime
 
 class AccountActivity : AppCompatActivity() {
     private val retrofitInit = RetrofitInit().init()
@@ -35,7 +39,6 @@ class AccountActivity : AppCompatActivity() {
     private var password: EditText? = null
     private var passwordConfirm: EditText? = null //do not send
     private var name: EditText? = null
-    private var birth: EditText? = null
     private var tel: EditText? = null
     private var telConfirm: EditText? = null //do not send
 
@@ -50,11 +53,22 @@ class AccountActivity : AppCompatActivity() {
     private var passwordResult: TextView? = null
     private var telResult: TextView? = null
 
+    private var createButton:Button? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_account)
 
         elementInit()
+    }
+    override fun onStart() {
+        super.onStart()
+        usernameDupButton!!.setOnClickListener(usernameDupListener)
+        passwordConfirmButton!!.setOnClickListener(confirmPassword)
+        telSendCodeButton!!.setOnClickListener(sendCode)
+        telCheckButton!!.setOnClickListener(checkCode)
+
+        createButton!!.setOnClickListener(createAccount)
     }
 
     private fun elementInit() {
@@ -62,7 +76,6 @@ class AccountActivity : AppCompatActivity() {
         password = findViewById(R.id.account_password)
         passwordConfirm = findViewById(R.id.account_passwordConfirm)
         name = findViewById(R.id.account_name)
-        birth = findViewById(R.id.account_birth)
         tel = findViewById(R.id.account_tel)
         telConfirm = findViewById(R.id.account_telCert)
 
@@ -74,17 +87,46 @@ class AccountActivity : AppCompatActivity() {
         usernameResult = findViewById(R.id.account_usernameResult)
         passwordResult = findViewById(R.id.account_passwordResult)
         telResult = findViewById(R.id.account_telResult)
+
+        createButton = findViewById(R.id.account_createButton)
     }
 
-    override fun onStart() {
-        super.onStart()
-        usernameDupButton!!.setOnClickListener(usernameDupListener)
-        passwordConfirmButton!!.setOnClickListener(confirmPassword)
-        telSendCodeButton!!.setOnClickListener(sendCode)
-        telCheckButton!!.setOnClickListener(checkCode)
+    private val createAccount:OnClickListener = OnClickListener {
+        if(!isTelCert || !isUsernameDup || !isPasswordConfirm || name!!.text.toString().isEmpty()){
+            Toast.makeText(this@AccountActivity.applicationContext, "내용을 모두 작성해주세요", Toast.LENGTH_LONG).show()
+        }else{
+            val call = jsonPlaceHolderApi.createAccount(Account(
+                username = username!!.text.toString(),
+                password = password!!.text.toString(),
+                name = name!!.text.toString(),
+                tel = tel!!.text.toString(),
+                role = "USER",
+                createDate = LocalDateTime.now().toString()
+            ))
+
+            call.enqueue(object: Callback<Boolean>{
+                override fun onResponse(call: Call<Boolean>, response: Response<Boolean>) {
+                    if (response.isSuccessful){
+                        val result:Boolean = response.body() as Boolean
+                        if(result){
+                            Toast.makeText(this@AccountActivity.applicationContext, "회원가입이 완료되었습니다.\n로그인 페이지로 이동합니다.", Toast.LENGTH_LONG).show()
+                            startActivity(Intent(this@AccountActivity.applicationContext, LoginActivity::class.java))
+                            finish()
+                        }else{
+                            Toast.makeText(this@AccountActivity.applicationContext, "데이터 저장 간 오류가 발생했습니다.\n다시 시도해주세요", Toast.LENGTH_LONG).show()
+                        }
+                    }
+                }
+
+                override fun onFailure(call: Call<Boolean>, t: Throwable) {
+                    Log.e(TAG, "createButton: ${t.message}", null)
+                }
+
+            })
+        }
     }
 
-    /*TODO(usernameDup, passwordCheck 양측 모두 정규식 확인 필요 -> 리팩토링 과정에서 해결바람)*/
+    /*TODO(usernameDup, passwordCheck, telCheck 모두 정규식 확인 필요 -> 리팩토링 과정에서 해결바람)*/
     private val usernameDupListener:OnClickListener = OnClickListener {
         val call = jsonPlaceHolderApi.getUsernameDup(username!!.text.toString())
         call.enqueue(object: Callback<Boolean>{
@@ -111,9 +153,7 @@ class AccountActivity : AppCompatActivity() {
     }
 
     private val confirmPassword:OnClickListener = OnClickListener {
-        isPasswordConfirm = (password!!.text.toString() == passwordConfirm!!.text.toString())
-        Log.d(TAG, "PasswordResult: $isPasswordConfirm")
-        Log.d(TAG, "PasswordResult-Input: ${password!!.text}")
+        isPasswordConfirm = (password!!.text.toString() == passwordConfirm!!.text.toString() && password!!.text.isNotEmpty())
 
         when(isPasswordConfirm){
             true -> {
@@ -142,9 +182,8 @@ class AccountActivity : AppCompatActivity() {
                     }
                 }
             }
-
             override fun onFailure(call: Call<Boolean>, t: Throwable) {
-                val call = jsonPlaceHolderApi.getAnswerCoder(tel!!.text.toString())
+                Log.e(TAG, "sendCode Failure: ${t.message}", null)
             }
         })
     }
@@ -154,9 +193,9 @@ class AccountActivity : AppCompatActivity() {
         call.enqueue(object: Callback<String>{
             override fun onResponse(call: Call<String>, response: Response<String>) {
                 if(response.isSuccessful){
-                    Log.d(TAG, "onResponse: ${response.body()}")
+                    telResult!!.text = "인증번호를 전송했습니다."
+                    telResult!!.setTextColor(Color.BLUE)
                     answerCode = response.body() as String
-                    Log.d(TAG, "answerCode: $answerCode")
                 }
             }
 
@@ -178,6 +217,5 @@ class AccountActivity : AppCompatActivity() {
                 telResult!!.setTextColor(Color.RED)
             }
         }
-        Log.d(TAG, "answerCode-Result: $isTelCert")
     }
 }
