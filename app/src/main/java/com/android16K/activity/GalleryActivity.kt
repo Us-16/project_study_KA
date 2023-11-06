@@ -5,20 +5,15 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.view.View
 import android.view.View.OnClickListener
-import android.widget.AdapterView
 import android.widget.AdapterView.OnItemClickListener
 import android.widget.ListView
 import com.android16K.R
 import com.android16K.adapter.GalleryAdapter
 import com.android16K.dataset.Gallery
-import com.android16K.retrofit.JsonPlaceHolderApi
-import com.android16K.retrofit.RetrofitInit
+import com.android16K.retrofit.*
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import retrofit2.*
 
 class GalleryActivity : AppCompatActivity() {
     private var addButton: FloatingActionButton? = null

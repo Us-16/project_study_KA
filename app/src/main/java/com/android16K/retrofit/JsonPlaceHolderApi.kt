@@ -1,23 +1,9 @@
 package com.android16K.retrofit
 
-import com.android16K.dataset.Account
-import com.android16K.dataset.Answer
-import com.android16K.dataset.Gallery
-import com.android16K.dataset.GalleryImage
-import com.android16K.dataset.LoginAccount
-import com.android16K.dataset.RequestAnswer
-import com.android16K.dataset.RequestGallery
+import com.android16K.dataset.*
 import okhttp3.MultipartBody
 import retrofit2.Call
-import retrofit2.http.Body
-import retrofit2.http.Field
-import retrofit2.http.FormUrlEncoded
-import retrofit2.http.GET
-import retrofit2.http.Headers
-import retrofit2.http.Multipart
-import retrofit2.http.POST
-import retrofit2.http.Part
-import retrofit2.http.Query
+import retrofit2.http.*
 
 interface JsonPlaceHolderApi {
     @GET("gall/api/list")

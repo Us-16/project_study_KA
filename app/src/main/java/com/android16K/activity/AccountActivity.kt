@@ -7,17 +7,11 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View.OnClickListener
-import android.widget.Button
-import android.widget.EditText
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import com.android16K.R
 import com.android16K.dataset.Account
-import com.android16K.retrofit.JsonPlaceHolderApi
-import com.android16K.retrofit.RetrofitInit
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import com.android16K.retrofit.*
+import retrofit2.*
 import java.time.LocalDateTime
 
 class AccountActivity : AppCompatActivity() {
@@ -140,7 +134,7 @@ class AccountActivity : AppCompatActivity() {
             }
 
             override fun onFailure(call: Call<Boolean>, t: Throwable) {
-                Log.e(TAG, "onFailure: ${t.message}", )
+                Log.e(TAG, "onFailure: ${t.message}", null)
             }
         })
     }

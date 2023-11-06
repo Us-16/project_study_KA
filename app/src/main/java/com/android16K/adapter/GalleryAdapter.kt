@@ -1,11 +1,8 @@
 package com.android16K.adapter
 
 import android.content.Context
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.widget.BaseAdapter
-import android.widget.TextView
+import android.view.*
+import android.widget.*
 import com.android16K.R
 import com.android16K.dataset.Gallery
 

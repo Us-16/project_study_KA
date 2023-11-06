@@ -1,31 +1,18 @@
 package com.android16K.activity
 
-import android.annotation.SuppressLint
 import android.content.ContentValues.TAG
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View.OnClickListener
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ImageView
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.widget.LinearLayoutCompat
-import androidx.core.view.marginBottom
 import com.android16K.R
-import com.android16K.dataset.Answer
-import com.android16K.dataset.AuthenticationInfo
+import com.android16K.dataset.*
 import com.android16K.dataset.Gallery
-import com.android16K.dataset.GalleryImage
-import com.android16K.dataset.RequestAnswer
-import com.android16K.retrofit.JsonPlaceHolderApi
-import com.android16K.retrofit.RetrofitInit
+import com.android16K.retrofit.*
 import com.bumptech.glide.Glide
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import java.time.LocalDateTime
+import retrofit2.*
 
 class GalleryDetailActivity : AppCompatActivity() {
     private val retrofitInit = RetrofitInit().init()

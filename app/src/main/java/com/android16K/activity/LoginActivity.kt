@@ -7,19 +7,14 @@ import android.os.Bundle
 import android.text.Editable
 import android.util.Log
 import android.view.View.OnClickListener
-import android.widget.Button
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import com.android16K.R
 import com.android16K.dataset.AuthenticationInfo
-import com.android16K.retrofit.JsonPlaceHolderApi
-import com.android16K.retrofit.RetrofitInit
+import com.android16K.retrofit.*
 import com.google.android.material.textfield.TextInputEditText
 import okhttp3.Headers
 import okhttp3.ResponseBody
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import retrofit2.*
 
 class LoginActivity : AppCompatActivity() {
     private var loginButton : Button? = null

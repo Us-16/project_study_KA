@@ -1,7 +1,6 @@
 package com.android16K.dataset
 
 import com.google.gson.annotations.SerializedName
-import java.time.LocalDateTime
 
 data class Gallery(
     @SerializedName("id") val id:Long,
