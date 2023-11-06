@@ -131,19 +131,12 @@ class AccountActivity : AppCompatActivity() {
         val call = jsonPlaceHolderApi.getUsernameDup(username!!.text.toString())
         call.enqueue(object: Callback<Boolean>{
             override fun onResponse(call: Call<Boolean>, response: Response<Boolean>) {
-                if(response.isSuccessful){
-                    isUsernameDup = response.body() as Boolean
-                    when(isUsernameDup){
-                        true -> {
-                            usernameResult!!.text = "사용가능한 아이디입니다."
-                            usernameResult!!.setTextColor(Color.BLUE)
-                        }
-                        else -> {
-                            usernameResult!!.text = "사용할 수 없는 아이디입니다."
-                            usernameResult!!.setTextColor(Color.RED)
-                        }
-                    }
-                }
+                val isUsernameDup = response.isSuccessful && response.body() == true
+                val textColor = if (isUsernameDup) Color.BLUE else Color.RED
+                val resultText = if (isUsernameDup) "사용가능한 아이디입니다." else "사용할 수 없는 아이디입니다."
+
+                usernameResult?.text = resultText
+                usernameResult?.setTextColor(textColor)
             }
 
             override fun onFailure(call: Call<Boolean>, t: Throwable) {
@@ -154,17 +147,12 @@ class AccountActivity : AppCompatActivity() {
 
     private val confirmPassword:OnClickListener = OnClickListener {
         isPasswordConfirm = (password!!.text.toString() == passwordConfirm!!.text.toString() && password!!.text.isNotEmpty())
+        val textColor = if(isPasswordConfirm) Color.BLUE else Color.RED
+        val resultText = if(isPasswordConfirm) "비밀번호 확인이 완료되었습니다." else "비밀번호를 다시 작성해주세요"
 
-        when(isPasswordConfirm){
-            true -> {
-                passwordResult!!.text = "비밀번호 확인이 완료되었습니다."
-                passwordResult!!.setTextColor(Color.BLUE)
-            }
-            false -> {
-                passwordResult!!.text = "비밀번호를 다시 작성해주세요"
-                passwordResult!!.setTextColor(Color.RED)
-            }
-        }
+        passwordResult!!.text = resultText
+        passwordResult!!.setTextColor(textColor)
+
     }
     
     private val sendCode:OnClickListener = OnClickListener {
@@ -207,15 +195,10 @@ class AccountActivity : AppCompatActivity() {
 
     private val checkCode:OnClickListener = OnClickListener {
         isTelCert = (telConfirm!!.text.toString() == answerCode)
-        when(isTelCert){
-            true -> {
-                telResult!!.text = "확인이 완료되었습니다."
-                telResult!!.setTextColor(Color.BLUE)
-            }
-            false -> {
-                telResult!!.text = "인증번호를 다시 확인해주세요"
-                telResult!!.setTextColor(Color.RED)
-            }
-        }
+        val resultText = if(isTelCert) "확인이 완료되었습니다." else "인증번호를 다시 확인해주세요"
+        val textColor = if(isTelCert) Color.BLUE else Color.RED
+
+        telResult!!.text = resultText
+        telResult!!.setTextColor(textColor)
     }
 }

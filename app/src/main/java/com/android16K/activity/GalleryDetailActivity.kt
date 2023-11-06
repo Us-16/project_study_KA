@@ -1,5 +1,6 @@
 package com.android16K.activity
 
+import android.annotation.SuppressLint
 import android.content.ContentValues.TAG
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -141,7 +142,7 @@ class GalleryDetailActivity : AppCompatActivity() {
             override fun onResponse(call: Call<Long>, response: Response<Long>) {
                 if(response.isSuccessful){
                     val data = response.body() as Long
-                    Log.d(TAG, "onResponse: ${data}") //-1을 받으면 실패
+                    Log.d(TAG, "onResponse: $data") //-1을 받으면 실패
                     if(data > 0L){
                         getGalleryAnswer(gallId!!)
                         answerInput.text.clear()
