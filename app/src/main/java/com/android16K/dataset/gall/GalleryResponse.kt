@@ -1,7 +1,6 @@
-package com.android16K.dataset
+package com.android16K.dataset.gall
 
 import com.google.gson.annotations.SerializedName
-import java.util.Objects
 
 data class GalleryResponse(
     @SerializedName("content") val content: List<Gallery>,

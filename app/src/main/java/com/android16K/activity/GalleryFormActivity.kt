@@ -10,7 +10,8 @@ import android.view.View.OnClickListener
 import android.widget.*
 import com.android16K.R
 import com.android16K.dataset.*
-import com.android16K.dataset.Gallery
+import com.android16K.dataset.gall.Gallery
+import com.android16K.dataset.gall.RequestGallery
 import com.android16K.retrofit.*
 import retrofit2.*
 

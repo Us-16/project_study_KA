@@ -1,6 +1,10 @@
 package com.android16K.retrofit
 
 import com.android16K.dataset.*
+import com.android16K.dataset.gall.Gallery
+import com.android16K.dataset.gall.GalleryImage
+import com.android16K.dataset.gall.GalleryResponse
+import com.android16K.dataset.gall.RequestGallery
 import okhttp3.MultipartBody
 import retrofit2.Call
 import retrofit2.http.*

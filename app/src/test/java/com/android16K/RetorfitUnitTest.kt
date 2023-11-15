@@ -1,10 +1,8 @@
 package com.android16K
 
-import com.android16K.dataset.Gallery
 import com.android16K.retrofit.*
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
-import retrofit2.*
 
 class RetorfitUnitTest {
     @Test
