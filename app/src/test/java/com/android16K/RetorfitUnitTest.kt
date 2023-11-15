@@ -1,17 +1,10 @@
 package com.android16K
 
-import android.content.ContentValues.TAG
-import android.util.Log
 import com.android16K.dataset.Gallery
-import com.android16K.retrofit.JsonPlaceHolderApi
-import com.android16K.retrofit.RetrofitInit
+import com.android16K.retrofit.*
 import kotlinx.coroutines.runBlocking
-import okhttp3.OkHttpClient
-import okhttp3.ResponseBody
 import org.junit.Test
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import retrofit2.*
 
 class RetorfitUnitTest {
     @Test
@@ -22,7 +15,7 @@ class RetorfitUnitTest {
         val call = jsonPlaceHolderApi.getAllGallList()
 
 
-        call.enqueue(object: Callback<List<Gallery>>{
+        /*call.enqueue(object: Callback<List<Gallery>>{
             override fun onResponse(
                 call: Call<List<Gallery>>,
                 response: Response<List<Gallery>>
@@ -43,7 +36,7 @@ class RetorfitUnitTest {
                 println("onFailure: ${t.message}")
             }
 
-        })
+        })*/
     }
 
     @Test

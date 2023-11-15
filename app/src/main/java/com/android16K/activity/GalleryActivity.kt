@@ -42,7 +42,7 @@ class GalleryActivity : AppCompatActivity() {
         val jsonPlaceHolderApi = retrofitInit.create(JsonPlaceHolderApi::class.java)
         val call = jsonPlaceHolderApi.getAllGallList()
 
-        call.enqueue(object : Callback<List<Gallery>> {
+        /*call.enqueue(object : Callback<List<Gallery>> {
             override fun onResponse(call: Call<List<Gallery>>, response: Response<List<Gallery>>) {
                 if (response.isSuccessful){
                     val data = response.body()
@@ -64,6 +64,6 @@ class GalleryActivity : AppCompatActivity() {
             override fun onFailure(call: Call<List<Gallery>>, t: Throwable) {
                 Log.e(TAG, "onFailure: ${t.message}")
             }
-        })
+        })*/
     }
 }

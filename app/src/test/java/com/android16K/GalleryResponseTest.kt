@@ -2,18 +2,17 @@ package com.android16K
 
 import com.android16K.retrofit.JsonPlaceHolderApi
 import com.android16K.retrofit.RetrofitInit
-import kotlinx.coroutines.runBlocking
 import org.junit.Test
 
-class LoginTest {
+class GalleryResponseTest {
     @Test
-    fun loginProcessTest(): Unit = runBlocking{
-        val retrofitInit = RetrofitInit().init()
+    fun getData(){
+        val retrofitInitTool = RetrofitInit()
+        val retrofitInit = retrofitInitTool.init()
         val jsonPlaceHolderApi = retrofitInit.create(JsonPlaceHolderApi::class.java)
-        val call = jsonPlaceHolderApi.loginProcess("test", "1234")
+        val call = jsonPlaceHolderApi.getAllGallList()
 
         val response = call.execute()
-
         println(response.body())
     }
 }
