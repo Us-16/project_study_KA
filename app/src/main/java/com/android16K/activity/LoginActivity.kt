@@ -18,23 +18,35 @@ import retrofit2.*
 
 class LoginActivity : AppCompatActivity() {
     private var loginButton : Button? = null
+    private var testButton: Button? = null
+
     private var toAccount: TextView? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
         loginButton = findViewById(R.id.login_loginButton)
+        testButton = findViewById(R.id.login_testButton)
+
         toAccount = findViewById(R.id.login_accountHy)
     }
 
     override fun onStart(){
         super.onStart()
         loginButton!!.setOnClickListener(loginListener)
+        testButton!!.setOnClickListener(goToTestListener)
+
         toAccount!!.setOnClickListener(toAccountAct)
     }
 
     private val toAccountAct: OnClickListener = OnClickListener {
         startActivity(Intent(this.applicationContext, AccountActivity::class.java))
+    }
+
+    private val goToTestListener: OnClickListener = OnClickListener {
+        val intent = Intent(this.applicationContext, TestActivity::class.java)
+        startActivity(intent)
+        finish()
     }
 
     private val loginListener: OnClickListener = OnClickListener {

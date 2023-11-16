@@ -4,46 +4,45 @@ import android.content.ContentValues.TAG
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import androidx.lifecycle.lifecycleScope
+import androidx.paging.map
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.android16K.R
-import com.android16K.retrofit.*
-import retrofit2.*
+import com.android16K.adapter.GallAdapter
+import com.android16K.adapter.GallRepository
+import com.android16K.retrofit.JsonPlaceHolderApi
+import com.android16K.retrofit.RetrofitInit
+import com.android16K.view_model.GallViewModel
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 class TestActivity : AppCompatActivity() {
+    private val retrofitInit = RetrofitInit().init()
+    private val jsonPlaceHolderApi = retrofitInit.create(JsonPlaceHolderApi::class.java)
+    private val gallRepository = GallRepository(jsonPlaceHolderApi)
+
+    private val gallViewModel = GallViewModel(gallRepository)
+
+    private val adapter = GallAdapter()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_test)
 
-        sendData()
-    }
+        val recyclerView = findViewById<RecyclerView>(R.id.test_recycleView)
+        recyclerView.layoutManager = LinearLayoutManager(this)
+        recyclerView.adapter = adapter
 
-    private fun sendData() {
-        val retrofitInit = RetrofitInit().init()
-        val jsonPlaceHolderApi = retrofitInit.create(JsonPlaceHolderApi::class.java)
-        val testData = HashMap<String, String>()
-        testData["username"] = "testUsername"
-        
-        val call = jsonPlaceHolderApi.loginProcess("test", "12345")
-        
-        call.enqueue(object: Callback<HashMap<String, Any>>{
-            override fun onResponse(call: Call<HashMap<String, Any>>, response: Response<HashMap<String, Any>>) {
-                if(response.isSuccessful){
-                    Log.d(TAG, "this is successful site")
-                    val cookieHeader = response.headers()["Set-Cookie"]?.split(";")?.get(0)
-                    Log.d(TAG, "JSESSIONID: ${cookieHeader?.split("=")?.get(1)}")
+        //Log.i(TAG, "http://49.173.81.98:8080 data-VM: ${gallViewModel.pagingData}")
 
-                    val data = response.body()
-                    Log.e(TAG, "login Failure: ${data?.get("code")}", )
-                }else{
-                    Log.e(TAG, "onResponse: ${response.code()}", )
-                    Log.e(TAG, "onResponse: ${response.errorBody()}", )
+        lifecycleScope.launch {
+            Log.i(TAG, "http://49.173.81.98:8080 Test: ${gallViewModel.getContent()}")
+            gallViewModel.getContent().collectLatest { data ->
+                data.map {
+                    Log.i(TAG, "http://49.173.81.98:8080 Collect: ${it.title}")
                 }
+                adapter.submitData(data)
             }
-
-            override fun onFailure(call: Call<HashMap<String, Any>>, t: Throwable) {
-                Log.e(TAG, "onFailure: ${t.message}", )
-            }
-
-        })
-
+        }
     }
 }

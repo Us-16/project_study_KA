@@ -12,6 +12,7 @@ import com.android16K.R
 import com.android16K.adapter.GalleryAdapter
 import com.android16K.dataset.gall.GalleryResponse
 import com.android16K.retrofit.*
+import com.android16K.view_model.GallViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import retrofit2.Call
 import retrofit2.Callback
@@ -19,6 +20,9 @@ import retrofit2.Response
 
 class GalleryActivity : AppCompatActivity() {
     private var addButton: FloatingActionButton? = null
+
+    private val retrofitInit = RetrofitInit().init()
+    private val jsonPlaceHolderApi = retrofitInit.create(JsonPlaceHolderApi::class.java)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_gallery_actvity)
@@ -40,8 +44,6 @@ class GalleryActivity : AppCompatActivity() {
     }
     
     private fun getAndPutData(){
-        val retrofitInit = RetrofitInit().init()
-        val jsonPlaceHolderApi = retrofitInit.create(JsonPlaceHolderApi::class.java)
         val call = jsonPlaceHolderApi.getAllGallList()
 
         call.enqueue(object : Callback<GalleryResponse> {

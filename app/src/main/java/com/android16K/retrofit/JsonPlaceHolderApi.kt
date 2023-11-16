@@ -11,7 +11,10 @@ import retrofit2.http.*
 
 interface JsonPlaceHolderApi {
     @GET("gall/api/list")
-    fun getAllGallList():Call<GalleryResponse>
+    fun getAllGallList(@Query("page")page:Long? = 0): Call<GalleryResponse>
+
+    @GET("gall/api/list")
+    fun getAllListSus(@Query("page")page:Long? = 0): GalleryResponse
 
     @FormUrlEncoded
     @POST("login/action")

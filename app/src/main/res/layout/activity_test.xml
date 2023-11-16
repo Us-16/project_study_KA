@@ -6,4 +6,20 @@
     android:layout_height="match_parent"
     tools:context=".activity.TestActivity">
 
+    <TextView
+        android:id="@+id/test_head"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="test"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/test_recycleView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/test_head" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
