@@ -2,18 +2,20 @@ package com.android16K.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.paging.PagingDataAdapter
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.android16K.databinding.RecycleGallBinding
 import com.android16K.dataset.TestData
 import com.android16K.dataset.gall.Gallery
 
-class GallRecylerViewAdapter: RecyclerView.Adapter<GallRecylerViewAdapter.MyViewHolder>() {
-    var testList = mutableListOf<TestData>()
-
+class GallRecylerViewAdapter: PagingDataAdapter<Gallery, GallRecylerViewAdapter.MyViewHolder>(
+    diffCallback
+) {
     inner class MyViewHolder(
         private val binding: RecycleGallBinding
     ): RecyclerView.ViewHolder(binding.root){
-        fun bind(gallData: TestData){
+        fun bind(gallData: Gallery){
             binding.testTitle.text = gallData.title
             binding.testContent.text = gallData.content
         }
@@ -25,8 +27,21 @@ class GallRecylerViewAdapter: RecyclerView.Adapter<GallRecylerViewAdapter.MyView
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        holder.bind(testList[position])
+        val item = getItem(position)
+        holder.bind(item!!)
     }
 
-    override fun getItemCount(): Int = testList.size
+    //override fun getItemCount(): Int = testList.size
+
+    companion object{
+        private val diffCallback = object : DiffUtil.ItemCallback<Gallery>(){
+            override fun areItemsTheSame(oldItem: Gallery, newItem: Gallery): Boolean {
+                return oldItem == newItem
+            }
+
+            override fun areContentsTheSame(oldItem: Gallery, newItem: Gallery): Boolean {
+                return oldItem == newItem
+            }
+        }
+    }
 }

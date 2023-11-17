@@ -15,14 +15,13 @@ import com.android16K.dataset.TestData
 import com.android16K.dataset.gall.Gallery
 import com.android16K.retrofit.JsonPlaceHolderApi
 import com.android16K.retrofit.RetrofitInit
+import com.android16K.view_model.GallViewModel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
-class TestActivity : AppCompatActivity() {
+class TestActivity: AppCompatActivity() {
     private lateinit var mainBinding: ActivityTestBinding
-    //private lateinit var adapter: GallRecylerViewAdapter
-
-    private val testData = mutableListOf<TestData>()
+    private val gallViewModel: GallViewModel = GallViewModel()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_test)
@@ -30,26 +29,18 @@ class TestActivity : AppCompatActivity() {
         mainBinding = ActivityTestBinding.inflate(layoutInflater)
         setContentView(mainBinding.root)
 
-        initTestData()
         initRecylcerView()
     }
 
     private fun initRecylcerView() {
         val adapter = GallRecylerViewAdapter()
-        adapter.testList = testData
         mainBinding.testRecycleView.adapter = adapter
         mainBinding.testRecycleView.layoutManager = LinearLayoutManager(this)
-    }
 
-    private fun initTestData(){
-        with(testData){
-            add(TestData("test1", "content1"))
-            add(TestData("test2", "content2"))
-            add(TestData("test=3", "content3"))
-            add(TestData("test4", "content14"))
-            add(TestData("test5", "content15"))
-            add(TestData("test6", "content16"))
-            add(TestData("test7", "content17"))
+        lifecycleScope.launch {
+            gallViewModel.setPaging().collectLatest { pagingData ->
+                adapter.submitData(pagingData)
+            }
         }
     }
 }
