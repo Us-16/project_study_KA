@@ -9,40 +9,47 @@ import androidx.paging.map
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.android16K.R
-import com.android16K.adapter.GallAdapter
-import com.android16K.adapter.GallRepository
+import com.android16K.adapter.GallRecylerViewAdapter
+import com.android16K.databinding.ActivityTestBinding
+import com.android16K.dataset.TestData
+import com.android16K.dataset.gall.Gallery
 import com.android16K.retrofit.JsonPlaceHolderApi
 import com.android16K.retrofit.RetrofitInit
-import com.android16K.view_model.GallViewModel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 class TestActivity : AppCompatActivity() {
-    private val retrofitInit = RetrofitInit().init()
-    private val jsonPlaceHolderApi = retrofitInit.create(JsonPlaceHolderApi::class.java)
-    private val gallRepository = GallRepository(jsonPlaceHolderApi)
+    private lateinit var mainBinding: ActivityTestBinding
+    //private lateinit var adapter: GallRecylerViewAdapter
 
-    private val gallViewModel = GallViewModel(gallRepository)
-
-    private val adapter = GallAdapter()
+    private val testData = mutableListOf<TestData>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_test)
 
-        val recyclerView = findViewById<RecyclerView>(R.id.test_recycleView)
-        recyclerView.layoutManager = LinearLayoutManager(this)
-        recyclerView.adapter = adapter
+        mainBinding = ActivityTestBinding.inflate(layoutInflater)
+        setContentView(mainBinding.root)
 
-        //Log.i(TAG, "http://49.173.81.98:8080 data-VM: ${gallViewModel.pagingData}")
+        initTestData()
+        initRecylcerView()
+    }
 
-        lifecycleScope.launch {
-            Log.i(TAG, "http://49.173.81.98:8080 Test: ${gallViewModel.getContent()}")
-            gallViewModel.getContent().collectLatest { data ->
-                data.map {
-                    Log.i(TAG, "http://49.173.81.98:8080 Collect: ${it.title}")
-                }
-                adapter.submitData(data)
-            }
+    private fun initRecylcerView() {
+        val adapter = GallRecylerViewAdapter()
+        adapter.testList = testData
+        mainBinding.testRecycleView.adapter = adapter
+        mainBinding.testRecycleView.layoutManager = LinearLayoutManager(this)
+    }
+
+    private fun initTestData(){
+        with(testData){
+            add(TestData("test1", "content1"))
+            add(TestData("test2", "content2"))
+            add(TestData("test=3", "content3"))
+            add(TestData("test4", "content14"))
+            add(TestData("test5", "content15"))
+            add(TestData("test6", "content16"))
+            add(TestData("test7", "content17"))
         }
     }
 }

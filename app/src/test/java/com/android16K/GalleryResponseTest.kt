@@ -2,7 +2,6 @@ package com.android16K
 
 import com.android16K.retrofit.JsonPlaceHolderApi
 import com.android16K.retrofit.RetrofitInit
-import com.android16K.view_model.GallViewModel
 import org.junit.Test
 
 class GalleryResponseTest {

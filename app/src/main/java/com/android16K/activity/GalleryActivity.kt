@@ -12,7 +12,6 @@ import com.android16K.R
 import com.android16K.adapter.GalleryAdapter
 import com.android16K.dataset.gall.GalleryResponse
 import com.android16K.retrofit.*
-import com.android16K.view_model.GallViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import retrofit2.Call
 import retrofit2.Callback

@@ -13,9 +13,6 @@ interface JsonPlaceHolderApi {
     @GET("gall/api/list")
     fun getAllGallList(@Query("page")page:Long? = 0): Call<GalleryResponse>
 
-    @GET("gall/api/list")
-    fun getAllListSus(@Query("page")page:Long? = 0): GalleryResponse
-
     @FormUrlEncoded
     @POST("login/action")
     fun loginProcess(@Field("username")username:String, @Field("password")password:String):Call<HashMap<String, Any>>
