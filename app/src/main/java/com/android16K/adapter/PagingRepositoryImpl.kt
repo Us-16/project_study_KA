@@ -11,7 +11,7 @@ class PagingRepositoryImpl(
     private val jsonPlaceHolderApi: JsonPlaceHolderApi
 ): PagingRepository {
     override fun getResultList(): Flow<PagingData<Gallery>> {
-        return Pager(PagingConfig(pageSize = 50)){
+        return Pager(PagingConfig(pageSize = 20)){
             PagingSource(jsonPlaceHolderApi)
         }.flow
     }
