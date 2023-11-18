@@ -4,46 +4,43 @@ import android.content.ContentValues.TAG
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import androidx.lifecycle.lifecycleScope
+import androidx.paging.map
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.android16K.R
-import com.android16K.retrofit.*
-import retrofit2.*
+import com.android16K.adapter.GallRecylerViewAdapter
+import com.android16K.databinding.ActivityTestBinding
+import com.android16K.dataset.TestData
+import com.android16K.dataset.gall.Gallery
+import com.android16K.retrofit.JsonPlaceHolderApi
+import com.android16K.retrofit.RetrofitInit
+import com.android16K.view_model.GallViewModel
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
-class TestActivity : AppCompatActivity() {
+class TestActivity: AppCompatActivity() {
+    private lateinit var mainBinding: ActivityTestBinding
+    private val gallViewModel: GallViewModel = GallViewModel()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_test)
 
-        sendData()
+        mainBinding = ActivityTestBinding.inflate(layoutInflater)
+        setContentView(mainBinding.root)
+
+        initRecylcerView()
     }
 
-    private fun sendData() {
-        val retrofitInit = RetrofitInit().init()
-        val jsonPlaceHolderApi = retrofitInit.create(JsonPlaceHolderApi::class.java)
-        val testData = HashMap<String, String>()
-        testData["username"] = "testUsername"
-        
-        val call = jsonPlaceHolderApi.loginProcess("test", "12345")
-        
-        call.enqueue(object: Callback<HashMap<String, Any>>{
-            override fun onResponse(call: Call<HashMap<String, Any>>, response: Response<HashMap<String, Any>>) {
-                if(response.isSuccessful){
-                    Log.d(TAG, "this is successful site")
-                    val cookieHeader = response.headers()["Set-Cookie"]?.split(";")?.get(0)
-                    Log.d(TAG, "JSESSIONID: ${cookieHeader?.split("=")?.get(1)}")
+    private fun initRecylcerView() {
+        val adapter = GallRecylerViewAdapter()
+        mainBinding.testRecycleView.adapter = adapter
+        mainBinding.testRecycleView.layoutManager = LinearLayoutManager(this)
 
-                    val data = response.body()
-                    Log.e(TAG, "login Failure: ${data?.get("code")}", )
-                }else{
-                    Log.e(TAG, "onResponse: ${response.code()}", )
-                    Log.e(TAG, "onResponse: ${response.errorBody()}", )
-                }
+        lifecycleScope.launch {
+            gallViewModel.setPaging().collectLatest { pagingData ->
+                adapter.submitData(pagingData)
             }
-
-            override fun onFailure(call: Call<HashMap<String, Any>>, t: Throwable) {
-                Log.e(TAG, "onFailure: ${t.message}", )
-            }
-
-        })
-
+        }
     }
 }

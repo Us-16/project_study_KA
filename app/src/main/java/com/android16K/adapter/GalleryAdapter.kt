@@ -4,7 +4,7 @@ import android.content.Context
 import android.view.*
 import android.widget.*
 import com.android16K.R
-import com.android16K.dataset.Gallery
+import com.android16K.dataset.gall.Gallery
 
 class GalleryAdapter(private val context: Context, private val gallList: List<Gallery>?): BaseAdapter() {
     override fun getCount(): Int {

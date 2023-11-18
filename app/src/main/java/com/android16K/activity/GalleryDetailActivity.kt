@@ -9,7 +9,8 @@ import android.widget.*
 import androidx.appcompat.widget.LinearLayoutCompat
 import com.android16K.R
 import com.android16K.dataset.*
-import com.android16K.dataset.Gallery
+import com.android16K.dataset.gall.Gallery
+import com.android16K.dataset.gall.GalleryImage
 import com.android16K.retrofit.*
 import com.bumptech.glide.Glide
 import retrofit2.*

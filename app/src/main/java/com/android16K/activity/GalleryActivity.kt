@@ -6,17 +6,22 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View.OnClickListener
-import android.widget.AdapterView.OnItemClickListener
+import android.widget.AdapterView
 import android.widget.ListView
 import com.android16K.R
 import com.android16K.adapter.GalleryAdapter
-import com.android16K.dataset.Gallery
+import com.android16K.dataset.gall.GalleryResponse
 import com.android16K.retrofit.*
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import retrofit2.*
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class GalleryActivity : AppCompatActivity() {
     private var addButton: FloatingActionButton? = null
+
+    private val retrofitInit = RetrofitInit().init()
+    private val jsonPlaceHolderApi = retrofitInit.create(JsonPlaceHolderApi::class.java)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_gallery_actvity)
@@ -38,20 +43,21 @@ class GalleryActivity : AppCompatActivity() {
     }
     
     private fun getAndPutData(){
-        val retrofitInit = RetrofitInit().init()
-        val jsonPlaceHolderApi = retrofitInit.create(JsonPlaceHolderApi::class.java)
         val call = jsonPlaceHolderApi.getAllGallList()
 
-        /*call.enqueue(object : Callback<List<Gallery>> {
-            override fun onResponse(call: Call<List<Gallery>>, response: Response<List<Gallery>>) {
+        call.enqueue(object : Callback<GalleryResponse> {
+            override fun onResponse(call: Call<GalleryResponse>, response: Response<GalleryResponse>) {
                 if (response.isSuccessful){
-                    val data = response.body()
-                    val galleryAdapter = GalleryAdapter(this@GalleryActivity, data)
+                    val data = response.body()!!
+                    val galleryAdapter = GalleryAdapter(this@GalleryActivity, data.content)
                     val gallListView = findViewById<ListView>(R.id.gall_list)
                     gallListView.onItemClickListener =
-                        OnItemClickListener { parent, view, position, id ->
-                            val it = Intent(this@GalleryActivity.applicationContext, GalleryDetailActivity::class.java)
-                            it.putExtra("gall_id", data?.get(position)?.id)
+                        AdapterView.OnItemClickListener { _, _, position, _ ->
+                            val it = Intent(
+                                this@GalleryActivity.applicationContext,
+                                GalleryDetailActivity::class.java
+                            )
+                            it.putExtra("gall_id", data.content[position].id)
                             startActivity(it)
                         }
                     gallListView.adapter = galleryAdapter
@@ -61,9 +67,9 @@ class GalleryActivity : AppCompatActivity() {
                 }
             }
 
-            override fun onFailure(call: Call<List<Gallery>>, t: Throwable) {
+            override fun onFailure(call: Call<GalleryResponse>, t: Throwable) {
                 Log.e(TAG, "onFailure: ${t.message}")
             }
-        })*/
+        })
     }
 }
