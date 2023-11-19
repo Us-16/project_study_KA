@@ -136,6 +136,7 @@ class GalleryDetailActivity : AppCompatActivity() {
                         answerInput.text.clear()
                     }else{
                         Toast.makeText(this@GalleryDetailActivity.applicationContext, "답변 등록에 실패했습니다.", Toast.LENGTH_LONG).show()
+                        
                     }
                 }
             }

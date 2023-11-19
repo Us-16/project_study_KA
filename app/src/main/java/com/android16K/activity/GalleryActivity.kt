@@ -1,30 +1,31 @@
 package com.android16K.activity
 
-import android.content.ContentValues.TAG
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.View.OnClickListener
-import android.widget.AdapterView
-import android.widget.ListView
+import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.android16K.R
-import com.android16K.adapter.GalleryAdapter
-import com.android16K.dataset.gall.GalleryResponse
-import com.android16K.retrofit.*
+import com.android16K.adapter.GallRecylerViewAdapter
+import com.android16K.databinding.ActivityGalleryActvityBinding
+import com.android16K.view_model.GallViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 class GalleryActivity : AppCompatActivity() {
+    private lateinit var galleryActivityBinding: ActivityGalleryActvityBinding
+    private val gallViewModel = GallViewModel()
+
     private var addButton: FloatingActionButton? = null
 
-    private val retrofitInit = RetrofitInit().init()
-    private val jsonPlaceHolderApi = retrofitInit.create(JsonPlaceHolderApi::class.java)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_gallery_actvity)
+
+        galleryActivityBinding = ActivityGalleryActvityBinding.inflate(layoutInflater)
+        setContentView(galleryActivityBinding.root)
 
         getAndPutData()
 
@@ -43,33 +44,14 @@ class GalleryActivity : AppCompatActivity() {
     }
     
     private fun getAndPutData(){
-        val call = jsonPlaceHolderApi.getAllGallList()
+        val adapter = GallRecylerViewAdapter()
+        galleryActivityBinding.gallRecycleView.adapter = adapter
+        galleryActivityBinding.gallRecycleView.layoutManager = LinearLayoutManager(this)
 
-        call.enqueue(object : Callback<GalleryResponse> {
-            override fun onResponse(call: Call<GalleryResponse>, response: Response<GalleryResponse>) {
-                if (response.isSuccessful){
-                    val data = response.body()!!
-                    val galleryAdapter = GalleryAdapter(this@GalleryActivity, data.content)
-                    val gallListView = findViewById<ListView>(R.id.gall_list)
-                    gallListView.onItemClickListener =
-                        AdapterView.OnItemClickListener { _, _, position, _ ->
-                            val it = Intent(
-                                this@GalleryActivity.applicationContext,
-                                GalleryDetailActivity::class.java
-                            )
-                            it.putExtra("gall_id", data.content[position].id)
-                            startActivity(it)
-                        }
-                    gallListView.adapter = galleryAdapter
-                }else{
-                    Log.e(TAG, "onResponse: ${response.code()}")
-                    Log.e(TAG, "onResponse: ${response.errorBody()}")
-                }
+        lifecycleScope.launch {
+            gallViewModel.setPaging().collectLatest { pagingData ->
+                adapter.submitData(pagingData)
             }
-
-            override fun onFailure(call: Call<GalleryResponse>, t: Throwable) {
-                Log.e(TAG, "onFailure: ${t.message}")
-            }
-        })
+        }
     }
 }

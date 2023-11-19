@@ -6,8 +6,8 @@
     android:layout_height="wrap_content"
     tools:context=".activity.GalleryActivity">
 
-    <ListView
-        android:id="@+id/gall_list"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/gall_recycleView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:maxHeight="1dp"
