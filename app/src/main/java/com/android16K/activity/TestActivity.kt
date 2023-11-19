@@ -20,27 +20,8 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 class TestActivity: AppCompatActivity() {
-    private lateinit var mainBinding: ActivityTestBinding
-    private val gallViewModel: GallViewModel = GallViewModel()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_test)
-
-        mainBinding = ActivityTestBinding.inflate(layoutInflater)
-        setContentView(mainBinding.root)
-
-        initRecylcerView()
-    }
-
-    private fun initRecylcerView() {
-        val adapter = GallRecylerViewAdapter()
-        mainBinding.testRecycleView.adapter = adapter
-        mainBinding.testRecycleView.layoutManager = LinearLayoutManager(this)
-
-        lifecycleScope.launch {
-            gallViewModel.setPaging().collectLatest { pagingData ->
-                adapter.submitData(pagingData)
-            }
-        }
     }
 }
