@@ -7,8 +7,8 @@ import org.junit.Test
 class LoginTest {
     @Test
     fun loginProcessTest(): Unit = runBlocking{
-        val jsonPlaceHolderApi = RetrofitInstance.api
-        val call = jsonPlaceHolderApi.loginProcess("test", "1234")
+        val loginApi = RetrofitInstance.loginApi
+        val call = loginApi.loginProcess("test", "1234")
 
         val response = call.execute()
 

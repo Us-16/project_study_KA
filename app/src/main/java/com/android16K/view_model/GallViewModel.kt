@@ -10,9 +10,9 @@ import com.android16K.retrofit.RetrofitInstance
 import kotlinx.coroutines.flow.Flow
 
 class GallViewModel: ViewModel() {
-    private val jsonPlaceHolderApi = RetrofitInstance.api
+    private val gallApi = RetrofitInstance.gallApi
 
     fun setPaging(): Flow<PagingData<Gallery>>{
-        return PagingRepositoryImpl(jsonPlaceHolderApi).getResultList().cachedIn(viewModelScope)
+        return PagingRepositoryImpl(gallApi).getResultList().cachedIn(viewModelScope)
     }
 }

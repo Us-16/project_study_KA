@@ -8,29 +8,25 @@ import android.text.Editable
 import android.util.Log
 import android.view.View.OnClickListener
 import android.widget.*
+import androidx.lifecycle.lifecycleScope
 import com.android16K.R
+import com.android16K.databinding.ActivityGalleryFormBinding
 import com.android16K.dataset.*
-import com.android16K.dataset.gall.Gallery
-import com.android16K.dataset.gall.RequestGallery
-import com.android16K.retrofit.*
-import retrofit2.*
+import com.android16K.dataset.gall.*
+import com.android16K.view_model.GallDetailViewModel
+import kotlinx.coroutines.launch
 
 class GalleryFormActivity : AppCompatActivity() {
-    private var title: EditText? = null
-    private var content: EditText? = null
-    private var saveButton: Button? = null
-    //private var imageButton: Button? = null
-    //private var image: ImageView? = null
-
+    private lateinit var formBinding: ActivityGalleryFormBinding
+    private val gallViewModel = GallDetailViewModel()
     //private var imageURI: Uri? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_gallery_form)
 
-        saveButton = findViewById(R.id.gall_form_saveButton)
-        title = findViewById(R.id.gall_form_title)
-        content = findViewById(R.id.gall_form_content)
+        formBinding = ActivityGalleryFormBinding.inflate(layoutInflater)
+        setContentView(formBinding.root)
 
         //imageButton = findViewById(R.id.gall_form_imageButton)
         //image = findViewById(R.id.gall_form_image)
@@ -38,7 +34,7 @@ class GalleryFormActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        saveButton!!.setOnClickListener(saveGallery)
+        formBinding.gallFormSaveButton.setOnClickListener(saveGallery)
         //imageButton!!.setOnClickListener(imageSave)
     }
 
@@ -61,39 +57,29 @@ class GalleryFormActivity : AppCompatActivity() {
     }
 
     private val saveGallery:OnClickListener = OnClickListener{
-        if(!checkEmpty(title!!.text, content!!.text)) {
+        if(!checkEmpty(formBinding.gallFormTitle.text!!, formBinding.gallFormContent.text)) {
             //만약 비었다면
             Toast.makeText(this.applicationContext, "내용을 모두 작성해주세요", Toast.LENGTH_LONG).show()
         }else{
-            sendData(title!!.text, content!!.text)
+            sendData(formBinding.gallFormTitle.text!!, formBinding.gallFormContent.text)
         }
     }
 
     private fun sendData(title: Editable, content: Editable) {
-        val jsonPlaceHolderApi = RetrofitInstance.api
         val authenticationInfo = AuthenticationInfo.getInstance()
-
-        val call = jsonPlaceHolderApi.createGall(RequestGallery(title.toString(), content.toString(), "TEST", authenticationInfo.username))
-        
-        call.enqueue(object : Callback<Gallery> {
-            override fun onResponse(call: Call<Gallery>, response: Response<Gallery>) {
-                if(response.isSuccessful){
+        lifecycleScope.launch {
+            val result = gallViewModel.sendForm(RequestGallery(title.toString(), content.toString(), "TEST", authenticationInfo.username))
+            when(result.isSuccessful){
+                true -> {
                     Log.d(TAG, "onResponse: Success") //14:26 확인했습니다.
                     //go To Detail
                     val it = Intent(this@GalleryFormActivity.applicationContext, GalleryDetailActivity::class.java)
-                    it.putExtra("gall_id", response.body()!!.id)
+                    it.putExtra("gall_id", result.body()!!.id)
                     startActivity(it)
                     finish()
-                }else {
-                    Log.e(TAG, "onResponse: ${response.code()}, ${response.errorBody()}",)
-                }
+                }else -> Log.e(TAG, "onResponse: ${result.code()}, ${result.errorBody()}",)
             }
-
-            override fun onFailure(call: Call<Gallery>, t: Throwable) {
-                Log.e(TAG, "onFailure: ${t.message}")
-            }
-
-        })
+        }
     }
 
     /*private fun sendImage(){

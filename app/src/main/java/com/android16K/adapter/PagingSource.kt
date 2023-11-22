@@ -5,12 +5,12 @@ import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.android16K.dataset.gall.Gallery
-import com.android16K.retrofit.JsonPlaceHolderApi
+import com.android16K.retrofit.GallApi
 import retrofit2.awaitResponse
 import java.lang.Exception
 
 class PagingSource(
-    private val jsonPlaceHolderApi: JsonPlaceHolderApi
+    private val gallApi: GallApi
 ): PagingSource<Int, Gallery>() {
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Gallery> {
         return try{
@@ -18,7 +18,7 @@ class PagingSource(
             val pageIndex = params.key ?: 0
             // Api 호출 결과 리스트
             val response =
-                jsonPlaceHolderApi.getAllGallList(
+                gallApi.getAllGallList(
                     page = pageIndex.toLong()
                 ).awaitResponse().body()
             // 검색 리스트

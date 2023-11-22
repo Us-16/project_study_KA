@@ -65,15 +65,15 @@ class LoginActivity : AppCompatActivity() {
     private fun loginProcess(header: Headers, data: HashMap<String, Any>?) {
         when(data?.containsKey("code")){
             true -> Toast.makeText(this.applicationContext, "Login Failure ", Toast.LENGTH_LONG).show()
-            else -> loginSuccess(header)
+            else -> loginSuccess(header, data)
         }
     }
 
-    private fun loginSuccess(header: Headers){
+    private fun loginSuccess(header: Headers, data: HashMap<String, Any>?){
         val cookieHeader = header["Set-Cookie"]?.split(";")?.get(0)
         val authenticationInfo = AuthenticationInfo.getInstance()
-        authenticationInfo.username = "test"
-        authenticationInfo.authorities = listOf("USER")
+        authenticationInfo.username = data!!["username"].toString()
+        authenticationInfo.authorities = data["authorities"] as List<String>
         authenticationInfo.jSessionId = cookieHeader?.split("=")?.get(1)
 
         // Go to Gallery List

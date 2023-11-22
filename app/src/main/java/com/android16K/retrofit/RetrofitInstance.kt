@@ -19,11 +19,13 @@ object RetrofitInstance {
             .build()
     }
 
-    val api: JsonPlaceHolderApi by lazy {
-        retrofitInitial.create(JsonPlaceHolderApi::class.java)
+    val gallApi:GallApi by lazy {
+        retrofitInitial.create(GallApi::class.java)
     }
-
     val loginApi: LoginApi by lazy {
         retrofitInitial.create(LoginApi::class.java)
+    }
+    val accountApi:AccountApi by lazy {
+        retrofitInitial.create(AccountApi::class.java)
     }
 }
