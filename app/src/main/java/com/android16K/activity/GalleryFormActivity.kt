@@ -70,8 +70,7 @@ class GalleryFormActivity : AppCompatActivity() {
     }
 
     private fun sendData(title: Editable, content: Editable) {
-        val retrofitInit = RetrofitInit().init()
-        val jsonPlaceHolderApi = retrofitInit.create(JsonPlaceHolderApi::class.java)
+        val jsonPlaceHolderApi = RetrofitInstance.api
         val authenticationInfo = AuthenticationInfo.getInstance()
 
         val call = jsonPlaceHolderApi.createGall(RequestGallery(title.toString(), content.toString(), "TEST", authenticationInfo.username))

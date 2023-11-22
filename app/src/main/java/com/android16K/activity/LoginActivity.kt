@@ -57,8 +57,7 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun loginProcess(username: Editable?, password: Editable?){
-        val retrofitInit = RetrofitInit().init()
-        val jsonPlaceHolderApi = retrofitInit.create(JsonPlaceHolderApi::class.java)
+        val jsonPlaceHolderApi = RetrofitInstance.api
         val call = jsonPlaceHolderApi.loginProcess(username.toString(), password.toString())
 
         call.enqueue(object: Callback<HashMap<String, Any>>{

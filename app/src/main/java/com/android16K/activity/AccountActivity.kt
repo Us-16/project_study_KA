@@ -15,8 +15,7 @@ import retrofit2.*
 import java.time.LocalDateTime
 
 class AccountActivity : AppCompatActivity() {
-    private val retrofitInit = RetrofitInit().init()
-    private val jsonPlaceHolderApi = retrofitInit.create(JsonPlaceHolderApi::class.java)
+    private val jsonPlaceHolderApi = RetrofitInstance.api
 
     /*
     * 중복 및 확인 버튼 규칙: 문제가 없는 경우에 true, 문제가 있는 경우 false

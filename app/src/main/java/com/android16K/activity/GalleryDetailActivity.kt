@@ -3,80 +3,48 @@ package com.android16K.activity
 import android.content.ContentValues.TAG
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.View.OnClickListener
 import android.widget.*
 import androidx.appcompat.widget.LinearLayoutCompat
+import androidx.lifecycle.lifecycleScope
 import com.android16K.R
+import com.android16K.databinding.ActivityGalleryDetailBinding
 import com.android16K.dataset.*
-import com.android16K.dataset.gall.Gallery
-import com.android16K.dataset.gall.GalleryImage
-import com.android16K.retrofit.*
+import com.android16K.dataset.gall.*
+import com.android16K.view_model.GallDetailViewModel
 import com.bumptech.glide.Glide
-import retrofit2.*
+import kotlinx.coroutines.launch
 
 class GalleryDetailActivity : AppCompatActivity() {
-    private val retrofitInit = RetrofitInit().init()
-    private val jsonPlaceHolderApi = retrofitInit.create(JsonPlaceHolderApi::class.java)
-
-    private var title: TextView? = null
-    private var content: TextView? = null
-    private var author: TextView? = null
-    private var date: TextView? = null
-    private var layout: LinearLayoutCompat? = null
-    private var answerSaveButton: Button? = null
-
+    private lateinit var detailBinding: ActivityGalleryDetailBinding
     private var gallId:Long? = null
+
+    private val gallDetailViewModel = GallDetailViewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_gallery_detail)
 
+        detailBinding = ActivityGalleryDetailBinding.inflate(layoutInflater)
+        setContentView(detailBinding.root)
+
         gallId = intent.getLongExtra("gall_id", -1)
 
-        loadElement()
-
-        getGalleryData(gallId!!)
-        getGalleryImage(gallId!!)
-        getGalleryAnswer(gallId!!)
+        getGalleryData()
+        getGalleryImage()
+        getGalleryAnswer()
     }
 
     override fun onStart() {
         super.onStart()
-        answerSaveButton!!.setOnClickListener(saveAnswer)
+        detailBinding.gallDetailSaveAnswerButton.setOnClickListener(saveAnswer)
     }
 
-    private fun loadElement() {
-        title = findViewById(R.id.gall_detail_title)
-        content = findViewById(R.id.gall_detail_content)
-        date = findViewById(R.id.gall_detail_date)
-        author = findViewById(R.id.gall_detail_author)
-
-        layout = findViewById(R.id.gall_detail_imageContainer)
-
-        answerSaveButton = findViewById(R.id.gall_detail_saveAnswerButton)
-    }
-
-    private fun getGalleryImage(gallId: Long) {
-        val call = jsonPlaceHolderApi.getGallImageList(gallId)
-
-        call.enqueue(object: Callback<List<GalleryImage>>{
-            override fun onResponse(
-                call: Call<List<GalleryImage>>,
-                response: Response<List<GalleryImage>>
-            ) {
-                if(response.isSuccessful){
-                    Log.d(TAG, "onResponse: ${response.body()}")
-                    val data = response.body()
-
-                    layout?.let { imageLoad(it, data!!) }
-                }
-            }
-
-            override fun onFailure(call: Call<List<GalleryImage>>, t: Throwable) {
-                Log.e(TAG, "onFailure: ${t.message}", null)
-            }
-        })
+    private fun getGalleryImage() {
+        lifecycleScope.launch {
+            val imageList = gallDetailViewModel.getGalleryImage(gallId!!)
+            imageLoad(detailBinding.gallDetailImageContainer, imageList!!)
+        }
     }
 
     private fun imageLoad(layout: LinearLayoutCompat, imageList:List<GalleryImage>){
@@ -120,72 +88,42 @@ class GalleryDetailActivity : AppCompatActivity() {
     }
 
     private val saveAnswer: OnClickListener = OnClickListener {
-        val answerInput = findViewById<EditText>(R.id.gall_detail_answerInput)
+        val answerInput = detailBinding.gallDetailAnswerInput
         val authenticationInfo = AuthenticationInfo.getInstance()
-        val call = jsonPlaceHolderApi.createAnswer(
-            RequestAnswer(content = answerInput.text.toString(),
-                gallId = gallId!!.toLong(),
-                username = authenticationInfo.username!!))
-        call.enqueue(object:Callback<Long>{
-            override fun onResponse(call: Call<Long>, response: Response<Long>) {
-                if(response.isSuccessful){
-                    val data = response.body() as Long
-                    Log.d(TAG, "onResponse: $data") //-1을 받으면 실패
-                    if(data > 0L){
-                        getGalleryAnswer(gallId!!)
-                        answerInput.text.clear()
-                    }else{
-                        Toast.makeText(this@GalleryDetailActivity.applicationContext, "답변 등록에 실패했습니다.", Toast.LENGTH_LONG).show()
-                        
-                    }
+
+        lifecycleScope.launch {
+            val request = GallDetailViewModel().writeAnswer(
+                RequestAnswer(content = answerInput.text.toString(),
+                    gallId = gallId!!.toLong(),
+                    username = authenticationInfo.username!!)
+            )
+            if (request != null) {
+                if(request > 0L){
+                    getGalleryAnswer()
+                    answerInput.text.clear()
+                }else{
+                    Toast.makeText(this@GalleryDetailActivity.applicationContext, "답변 등록에 실패했습니다.", Toast.LENGTH_LONG).show()
                 }
             }
-
-            override fun onFailure(call: Call<Long>, t: Throwable) {
-                Log.e(TAG, "onFailure: ${t.message}", null)
-            }
-        })
+        }
     }
 
-    private fun getGalleryAnswer(gallId: Long) {
-        val call = jsonPlaceHolderApi.getAllAnswer(gallId)
-
-        call.enqueue(object:Callback<List<Answer>>{
-            override fun onResponse(call: Call<List<Answer>>, response: Response<List<Answer>>) {
-                if(response.isSuccessful){
-                    val data = response.body()!!
-                    val answerContainer = findViewById<LinearLayoutCompat>(R.id.gall_detail_answerContainer)
-                    answerLoad(answerContainer, data)
-                }
-            }
-
-            override fun onFailure(call: Call<List<Answer>>, t: Throwable) {
-                Log.e(TAG, "onFailure: ${t.message}", null)
-            }
-        })
+    private fun getGalleryAnswer() {
+        lifecycleScope.launch{
+            val answerList = GallDetailViewModel().getAnswer(gallId!!)
+            val answerContainer = detailBinding.gallDetailAnswerContainer
+            answerLoad(answerContainer, answerList!!)
+        }
     }
 
-    private fun getGalleryData(gallId:Long){
-        val call = jsonPlaceHolderApi.getGallItem(gallId)
-
-        call.enqueue(object:Callback<Gallery>{
-            override fun onResponse(call: Call<Gallery>, response: Response<Gallery>) {
-                if(response.isSuccessful){
-                    val data = response.body()
-                    title!!.text = data!!.title
-                    content!!.text = data.content
-                    author!!.text=  data.account.username
-                    date!!.text = data.modifiedDate?.let { dateStyle(it) } ?: dateStyle(data.createDate)
-
-                    Log.d(TAG, "GalleryDetail: $data")
-                }
-            }
-
-            override fun onFailure(call: Call<Gallery>, t: Throwable) {
-                Log.e(TAG, "onFailure: ${t.message}", null)
-            }
-
-        })
+    private fun getGalleryData(){
+        lifecycleScope.launch {
+            val gall = gallDetailViewModel.getGallery(gallId!!)
+            detailBinding.gallDetailTitle.text = gall!!.title
+            detailBinding.gallDetailContent.text = gall.content
+            detailBinding.gallDetailAuthor.text=  gall.account.username
+            detailBinding.gallDetailDate.text = gall.modifiedDate?.let { dateStyle(it) } ?: dateStyle(gall.createDate)
+        }
     }
 
     private fun dateStyle(date: String): String {

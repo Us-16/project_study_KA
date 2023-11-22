@@ -1,7 +1,6 @@
 package com.android16K
 
 import com.android16K.retrofit.JsonPlaceHolderApi
-import com.android16K.retrofit.RetrofitInit
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
 
