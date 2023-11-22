@@ -4,6 +4,7 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.create
 
 object RetrofitInstance {
     private val retrofitInitial by lazy {
@@ -20,5 +21,9 @@ object RetrofitInstance {
 
     val api: JsonPlaceHolderApi by lazy {
         retrofitInitial.create(JsonPlaceHolderApi::class.java)
+    }
+
+    val loginApi: LoginApi by lazy {
+        retrofitInitial.create(LoginApi::class.java)
     }
 }

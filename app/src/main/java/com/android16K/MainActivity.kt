@@ -5,24 +5,22 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import com.android16K.activity.GalleryActivity
-import com.android16K.activity.TestActivity
+import com.android16K.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
+    private lateinit var mainActivityBinding: ActivityMainBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        mainActivityBinding = ActivityMainBinding.inflate(layoutInflater)
 
-        val toGallButton = findViewById<Button>(R.id.to_gallery)
+        intentListener(mainActivityBinding.toGallery, GalleryActivity::class.java)
+        intentListener(mainActivityBinding.toTest, GalleryActivity::class.java)
+    }
 
-        toGallButton.setOnClickListener{
-            val intent = Intent(this, GalleryActivity::class.java)
-            startActivity(intent)
-            finish()
-        }
-
-        val toTestButton = findViewById<Button>(R.id.to_test)
-        toTestButton.setOnClickListener{
-            val intent = Intent(this, TestActivity::class.java)
+    private fun intentListener(button: Button, activityClass:Class<*>){
+        button.setOnClickListener{
+            val intent = Intent(this, activityClass)
             startActivity(intent)
             finish()
         }
