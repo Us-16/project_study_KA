@@ -30,7 +30,6 @@ class AccountActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_account)
 
         accountBinding = ActivityAccountBinding.inflate(layoutInflater)
         setContentView(accountBinding.root)
@@ -41,7 +40,6 @@ class AccountActivity : AppCompatActivity() {
         accountBinding.accountPasswordConfirmButton.setOnClickListener(confirmPassword)
         accountBinding.accountTelCertButton.setOnClickListener(sendCode)
         accountBinding.accountTelCheckButton.setOnClickListener(checkCode)
-
         accountBinding.accountCreateButton.setOnClickListener(createAccount)
     }
     private fun afterSave(result: Boolean){
@@ -50,8 +48,7 @@ class AccountActivity : AppCompatActivity() {
             startActivity(Intent(this@AccountActivity.applicationContext, LoginActivity::class.java))
             finish()
         }else{
-            Toast.makeText(this@AccountActivity.applicationContext, "데이터 저장 간 오류가 발생했습니다.\n" +
-                    "다시 시도해주세요", Toast.LENGTH_LONG).show()
+            Toast.makeText(this@AccountActivity.applicationContext, "데이터 저장 간 오류가 발생했습니다.\n다시 시도해주세요", Toast.LENGTH_LONG).show()
         }
     }
     private fun saveData(account:Account){
@@ -104,9 +101,7 @@ class AccountActivity : AppCompatActivity() {
     private val sendCode:OnClickListener = OnClickListener {
         lifecycleScope.launch {
             val result = accountViewModel.isTelDup(accountBinding.accountTel.text.toString())
-            if(result!!){
-                getAnswerCode()
-            }else{
+            if(result!!){ getAnswerCode() }else{
                 accountBinding.accountTelResult.text = "이미 등록된 전화번호입니다."
                 accountBinding.accountTelResult.setTextColor(Color.RED)
             }

@@ -7,5 +7,4 @@ class LoginViewModel {
     private val loginApi = RetrofitInstance.loginApi
 
     suspend fun loginAction(username:String, password:String) = loginApi.loginProcess(username, password).awaitResponse()
-
 }

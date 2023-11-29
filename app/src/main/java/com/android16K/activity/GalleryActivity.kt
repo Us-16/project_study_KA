@@ -22,7 +22,6 @@ class GalleryActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_gallery_actvity)
 
         galleryActivityBinding = ActivityGalleryActvityBinding.inflate(layoutInflater)
         setContentView(galleryActivityBinding.root)

@@ -25,7 +25,6 @@ class GallRecylerViewAdapter: PagingDataAdapter<Gallery, GallRecylerViewAdapter.
                 val context = itemView.context
                 val intent = Intent(context, GalleryDetailActivity::class.java)
                 intent.putExtra("gall_id", gallData.id)
-                //intent.putExtra("galleryId", gallData.id)
                 context.startActivity(intent)
             }
         }

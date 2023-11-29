@@ -1,6 +1,5 @@
 package com.android16K.activity
 
-import android.content.ContentValues.TAG
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View.OnClickListener
@@ -23,7 +22,6 @@ class GalleryDetailActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_gallery_detail)
 
         detailBinding = ActivityGalleryDetailBinding.inflate(layoutInflater)
         setContentView(detailBinding.root)
@@ -98,7 +96,7 @@ class GalleryDetailActivity : AppCompatActivity() {
                     username = authenticationInfo.username!!)
             )
             if (request != null) {
-                if(request > 0L){
+                if(request > 0){
                     getGalleryAnswer()
                     answerInput.text.clear()
                 }else{
