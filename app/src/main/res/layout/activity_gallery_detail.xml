@@ -34,6 +34,7 @@
                 android:id="@+id/gall_detail_date"/>
 
             <HorizontalScrollView
+                android:id="@+id/gall_detail_imageWrapper"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
                 <androidx.appcompat.widget.LinearLayoutCompat
@@ -43,6 +44,23 @@
                     android:orientation="horizontal">
                 </androidx.appcompat.widget.LinearLayoutCompat>
             </HorizontalScrollView>
+            <LinearLayout
+                android:id="@+id/gall_detail_myButtonContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="invisible">
+                <Button
+                    android:id="@+id/gall_detail_updateButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="수정"/>
+                <Button
+                    android:id="@+id/gall_detail_deleteButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="삭제"
+                    android:layout_marginStart="10dp"/>
+            </LinearLayout>
 
             <ScrollView
                 android:layout_width="match_parent"

@@ -4,11 +4,13 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View.OnClickListener
+import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.android16K.R
 import com.android16K.adapter.GallRecylerViewAdapter
 import com.android16K.databinding.ActivityGalleryActvityBinding
+import com.android16K.dataset.AuthenticationInfo
 import com.android16K.view_model.GallViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.coroutines.flow.collectLatest

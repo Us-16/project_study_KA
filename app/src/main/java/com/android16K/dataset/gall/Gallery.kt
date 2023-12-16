@@ -5,13 +5,13 @@ import com.android16K.dataset.Account
 import com.google.gson.annotations.SerializedName
 
 data class Gallery(
-    @SerializedName("id") val id:Long,
-    @SerializedName("account") val account: Account,
-    @SerializedName("title") val title:String,
-    @SerializedName("content") val content:String,
-    @SerializedName("createdDate") val createDate:String,
-    @SerializedName("modifiedDate") val modifiedDate: String?,
-    @SerializedName("classify") val classify:String
+    @SerializedName("id") var id:Long,
+    @SerializedName("account") var account: Account,
+    @SerializedName("title") var title:String,
+    @SerializedName("content") var content:String,
+    @SerializedName("createdDate") var createDate:String,
+    @SerializedName("modifiedDate") var modifiedDate: String?,
+    @SerializedName("classify") var classify:String
 ){
     companion object{
         val DiffCallBack = object:DiffUtil.ItemCallback<Gallery>(){

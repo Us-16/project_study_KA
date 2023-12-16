@@ -1,58 +1,115 @@
 package com.android16K.activity
 
+import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.ContentValues.TAG
+import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.database.Cursor
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.provider.MediaStore
 import android.text.Editable
 import android.util.Log
+import android.view.View
 import android.view.View.OnClickListener
 import android.widget.*
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
-import com.android16K.R
 import com.android16K.databinding.ActivityGalleryFormBinding
 import com.android16K.dataset.*
 import com.android16K.dataset.gall.*
 import com.android16K.view_model.GallDetailViewModel
 import kotlinx.coroutines.launch
+import okhttp3.MediaType
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import java.io.File
 
 class GalleryFormActivity : AppCompatActivity() {
     private lateinit var formBinding: ActivityGalleryFormBinding
     private val gallViewModel = GallDetailViewModel()
-    //private var imageURI: Uri? = null
+    private lateinit var body: MultipartBody.Part
+
+    private lateinit var gallInstance: GalleryDTO
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         formBinding = ActivityGalleryFormBinding.inflate(layoutInflater)
         setContentView(formBinding.root)
-
-        //imageButton = findViewById(R.id.gall_form_imageButton)
-        //image = findViewById(R.id.gall_form_image)
     }
 
     override fun onStart() {
         super.onStart()
         formBinding.gallFormSaveButton.setOnClickListener(saveGallery)
-        //imageButton!!.setOnClickListener(imageSave)
-    }
+        formBinding.gallFormImageButton.setOnClickListener(selectImage)
+        formBinding.gallFormUpdateButton.setOnClickListener(sendUpdate)
 
-    /*private val imageSave:OnClickListener = OnClickListener {
-        val image = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI)
-        startActivityForResult(image, 100)
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if(resultCode == RESULT_OK && requestCode == 100){
-            val imageUri = data?.data
-            imageURI = imageUri
-            image!!.setImageURI(imageUri)
+        val gallId = intent.getLongExtra("isUpdate", -1)
+        if(gallId != -1L){
+            fillData()
+            //수정버튼 보이도록
+            formBinding.gallFormUpdateButton.visibility = View.VISIBLE
+            formBinding.gallFormSaveButton.visibility = View.INVISIBLE
+        }else{
+            //저장버튼 보이도록
+            formBinding.gallFormUpdateButton.visibility = View.INVISIBLE
+            formBinding.gallFormSaveButton.visibility = View.VISIBLE
         }
-    }*/
+
+    }
+
+    private fun fillData() {
+        gallInstance = GalleryDTO.getInstance()
+        formBinding.gallFormTitle.setText(gallInstance!!.title)
+        formBinding.gallFormContent.setText(gallInstance!!.content)
+    }
 
     private fun checkEmpty(title: Editable, content: Editable): Boolean {
         return title.isNotEmpty() && content.isNotEmpty()
+    }
+
+    private val imageResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
+        result ->
+        if(result.resultCode == Activity.RESULT_OK){
+            val imageUri = result.data?.data ?: return@registerForActivityResult
+
+            val file = File(absolutePath(imageUri, this))
+            val requestFile = RequestBody.create(MediaType.parse("image/*"), file)
+            body = MultipartBody.Part.createFormData("profile", file.name, requestFile)
+
+            formBinding.gallFormImageView.setImageURI(imageUri)
+        }
+    }
+
+    @SuppressLint("Recycle")
+    private fun absolutePath(path: Uri?, context: Context): String {
+        val proj:Array<String> = arrayOf(MediaStore.Images.Media.DATA)
+        val c:Cursor? = context.contentResolver.query(path!!, proj, null, null, null)
+        val index = c?.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
+        c?.moveToFirst()
+
+        val result = c?.getString(index!!)
+
+        return result!!
+    }
+
+    private val selectImage:OnClickListener = OnClickListener{
+        val readPermission = ContextCompat.checkSelfPermission(this, android.Manifest.permission.READ_EXTERNAL_STORAGE)
+
+        if(readPermission == PackageManager.PERMISSION_DENIED){
+            ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE), 1)
+        }else{
+            val intent = Intent(Intent.ACTION_PICK)
+            intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*")
+
+            imageResult.launch(intent)
+        }
     }
 
     private val saveGallery:OnClickListener = OnClickListener{
@@ -67,40 +124,30 @@ class GalleryFormActivity : AppCompatActivity() {
     private fun sendData(title: Editable, content: Editable) {
         val authenticationInfo = AuthenticationInfo.getInstance()
         lifecycleScope.launch {
-            val result = gallViewModel.sendForm(RequestGallery(title.toString(), content.toString(), "TEST", authenticationInfo.username))
-            when(result.isSuccessful){
-                true -> {
-                    Log.d(TAG, "onResponse: Success") //14:26 확인했습니다.
-                    //go To Detail
-                    val it = Intent(this@GalleryFormActivity.applicationContext, GalleryDetailActivity::class.java)
-                    it.putExtra("gall_id", result.body()!!.id)
-                    startActivity(it)
+            val letterResult = gallViewModel.sendForm(RequestGallery(null, title.toString(), content.toString(), "TEST", authenticationInfo.username))
+            letterResult.takeIf {it.isSuccessful}?.body()?.let { result ->
+                val imageResult = gallViewModel.uploadImage(body, result.id)
+                if(imageResult.isSuccessful){
+                    val intent = Intent(this@GalleryFormActivity.applicationContext, GalleryDetailActivity::class.java)
+                    intent.putExtra("gall_id", result.id)
+                    startActivity(intent)
                     finish()
-                }else -> Log.e(TAG, "onResponse: ${result.code()}, ${result.errorBody()}",)
-            }
+                }else{
+                    Log.e(TAG, "onResponse: ${imageResult.code()}, ${imageResult.errorBody()}",)
+                }
+            }?: Log.e(TAG, "onResponse: ${letterResult.code()}, ${letterResult.errorBody()}", null)
         }
     }
 
-    /*private fun sendImage(){
-        val retrofitInit = RetrofitInit().init()
-        val jsonPlaceHolderApi = retrofitInit.create(JsonPlaceHolderApi::class.java)
-
-        val file = imageURI!!.path?.let { File(it) }
-        val requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file)
-        val imagePart = MultipartBody.Part.createFormData("upload_file", file!!.name + ".jpeg", requestFile)
-
-        val call = jsonPlaceHolderApi.createImage(imagePart)
-
-        call.enqueue(object : Callback<Any>{
-            override fun onResponse(call: Call<Any>, response: Response<Any>) {
-                Log.d(TAG, "onResponse: $response")
+    private val sendUpdate = OnClickListener{
+        lifecycleScope.launch {
+            val updateResult = gallViewModel.updateGall(RequestGallery(id = gallInstance.id, title = formBinding.gallFormTitle.text.toString(), content = formBinding.gallFormContent.text.toString(), username = AuthenticationInfo.getInstance().username))
+            if (updateResult.isSuccessful){
+                val intent = Intent(this@GalleryFormActivity.applicationContext, GalleryDetailActivity::class.java)
+                intent.putExtra("gall_id", updateResult.body()!!.id)
+                startActivity(intent)
+                finish()
             }
-
-            override fun onFailure(call: Call<Any>, t: Throwable) {
-                Log.e(TAG, "onFailure: ${t.message}")
-            }
-
-        })
-
-    }*/
+        }
+    }
 }

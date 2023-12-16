@@ -1,15 +1,17 @@
 package com.android16K.activity
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import android.view.View.OnClickListener
 import android.widget.*
 import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.lifecycle.lifecycleScope
-import com.android16K.R
 import com.android16K.databinding.ActivityGalleryDetailBinding
 import com.android16K.dataset.*
 import com.android16K.dataset.gall.*
+import com.android16K.dataset.gall.Gallery
 import com.android16K.view_model.GallDetailViewModel
 import com.bumptech.glide.Glide
 import kotlinx.coroutines.launch
@@ -36,6 +38,8 @@ class GalleryDetailActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
         detailBinding.gallDetailSaveAnswerButton.setOnClickListener(saveAnswer)
+        detailBinding.gallDetailUpdateButton.setOnClickListener(updateGallery)
+        detailBinding.gallDetailDeleteButton.setOnClickListener(deleteGallery)
     }
 
     private fun getGalleryImage() {
@@ -106,6 +110,21 @@ class GalleryDetailActivity : AppCompatActivity() {
         }
     }
 
+    private val deleteGallery: OnClickListener = OnClickListener {
+        lifecycleScope.launch {
+            gallDetailViewModel.deleteGall(gallId!!)
+            Toast.makeText(this@GalleryDetailActivity, "삭제되었습니다.", Toast.LENGTH_SHORT).show()
+            startActivity(Intent(this@GalleryDetailActivity, GalleryActivity::class.java))
+            finish()
+        }
+    }
+
+    private val updateGallery: OnClickListener = OnClickListener {
+        val it = Intent(this@GalleryDetailActivity, GalleryFormActivity::class.java)
+        it.putExtra("isUpdate", gallId)
+        startActivity(it)
+    }
+
     private fun getGalleryAnswer() {
         lifecycleScope.launch{
             val answerList = GallDetailViewModel().getAnswer(gallId!!)
@@ -121,6 +140,17 @@ class GalleryDetailActivity : AppCompatActivity() {
             detailBinding.gallDetailContent.text = gall.content
             detailBinding.gallDetailAuthor.text=  gall.account.username
             detailBinding.gallDetailDate.text = gall.modifiedDate?.let { dateStyle(it) } ?: dateStyle(gall.createDate)
+
+            if(gall.account.username == AuthenticationInfo.getInstance().username){
+                detailBinding.gallDetailMyButtonContainer.visibility = View.VISIBLE // [수정/삭제]버튼 활성화
+
+                //수정 필요한 데이터 디바이스 내부에 저장
+                val gallInstance = GalleryDTO.getInstance()
+                gallInstance.id = gall.id
+                gallInstance.title = gall.title
+                gallInstance.content = gall.content
+            }
+
         }
     }
 

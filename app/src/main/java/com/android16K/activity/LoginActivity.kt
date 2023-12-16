@@ -1,6 +1,5 @@
 package com.android16K.activity
 
-import android.content.ContentValues.TAG
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -8,7 +7,6 @@ import android.text.Editable
 import android.view.View.OnClickListener
 import android.widget.*
 import androidx.lifecycle.lifecycleScope
-import com.android16K.R
 import com.android16K.databinding.ActivityLoginBinding
 import com.android16K.dataset.AuthenticationInfo
 import com.android16K.view_model.LoginViewModel

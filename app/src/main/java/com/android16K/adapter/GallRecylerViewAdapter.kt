@@ -40,8 +40,6 @@ class GallRecylerViewAdapter: PagingDataAdapter<Gallery, GallRecylerViewAdapter.
         holder.bind(item!!)
     }
 
-    //override fun getItemCount(): Int = testList.size
-
     companion object{
         private val diffCallback = object : DiffUtil.ItemCallback<Gallery>(){
             override fun areItemsTheSame(oldItem: Gallery, newItem: Gallery): Boolean {

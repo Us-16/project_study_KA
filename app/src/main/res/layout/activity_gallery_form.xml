@@ -6,55 +6,99 @@
     android:layout_height="match_parent"
     tools:context=".activity.GalleryFormActivity">
 
-    <com.google.android.material.textfield.TextInputEditText
-        android:id="@+id/gall_form_title"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="125dp"
-        android:layout_marginEnd="16dp"
-        android:hint="글 제목"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/gall_form_subject" />
+        android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/gall_form_subject"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:text="글 작성"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-    <EditText
-        android:id="@+id/gall_form_content"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="100dp"
-        android:layout_marginEnd="10dp"
-        android:gravity="top|left"
-        android:inputType="textMultiLine"
-        android:lines="5"
-        android:hint="글 내용"
-        android:maxWidth="5.0dip"
-        android:minWidth="10.0dip"
-        android:scrollHorizontally="false"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@id/gall_form_title"
-        app:layout_constraintTop_toTopOf="@id/gall_form_title" />
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/gall_form_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="125dp"
+                android:layout_marginEnd="16dp"
+                android:hint="글 제목"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/gall_form_subject" />
 
-    <Button
-        android:id="@+id/gall_form_saveButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="158dp"
-        android:layout_marginTop="135dp"
-        android:layout_marginEnd="159dp"
-        android:text="저장"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/gall_form_content" />
+            <TextView
+                android:id="@+id/gall_form_subject"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:text="글 작성"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <EditText
+                android:id="@+id/gall_form_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="100dp"
+                android:layout_marginEnd="10dp"
+                android:gravity="top|left"
+                android:inputType="textMultiLine"
+                android:lines="5"
+                android:hint="글 내용"
+                android:maxWidth="5.0dip"
+                android:minWidth="10.0dip"
+                android:scrollHorizontally="false"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@id/gall_form_title"
+                app:layout_constraintTop_toTopOf="@id/gall_form_title" />
+
+            <Button
+                android:id="@+id/gall_form_imageButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="@+id/gall_form_content"
+                android:layout_marginTop="157dp"
+                android:text="image"
+                app:layout_constraintTop_toTopOf="@id/gall_form_content" />
+
+            <ImageView
+                android:id="@+id/gall_form_imageView"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                app:layout_constraintStart_toStartOf="@+id/gall_form_imageButton"
+                app:layout_constraintTop_toBottomOf="@id/gall_form_imageButton" />
+
+            <Button
+                android:id="@+id/gall_form_saveButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="158dp"
+                android:layout_marginTop="135dp"
+                android:layout_marginEnd="159dp"
+                android:text="저장"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/gall_form_imageView" />
+
+            <Button
+                android:id="@+id/gall_form_updateButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="158dp"
+                android:layout_marginTop="135dp"
+                android:layout_marginEnd="159dp"
+                android:text="수정"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/gall_form_imageView" />
+
+        </LinearLayout>
+
+    </ScrollView>
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

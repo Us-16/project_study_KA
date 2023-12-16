@@ -53,6 +53,7 @@ dependencies {
     implementation("com.google.code.gson:gson")
 
     implementation("com.github.bumptech.glide:glide:4.13.0")
+    implementation("androidx.test.ext:junit-ktx:1.1.5")
     annotationProcessor("com.github.bumptech.glide:compiler:4.13.0")
 
     implementation("androidx.paging:paging-runtime-ktx:3.2.1")
